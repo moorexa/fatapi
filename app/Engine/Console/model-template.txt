@@ -1,0 +1,94 @@
+<?php
+namespace Resources\{SERVICE}\{VERSION}\Model;
+
+use Engine\{Interfaces\ModelInterface, DBMS, Table, ModelHelper};
+/**
+ * @package {MODEL} Model
+ * @author Amadi Ifeanyi <amadiify.com>
+ */
+class {MODEL} implements ModelInterface
+{
+    /**
+     * This 'ModelHelper' trait contains the fillable method and DB method.
+     */
+    use ModelHelper;
+
+    /**
+     * @var int $id
+     * This is significant to your model class. It gets its value when two things happens
+     * 1. The system encounters x-meta-id in the request header
+     * 2. The POST body sent contains a key 'id' along side a number as its value
+     */
+    public $id = 0;
+    
+    /**
+     * @var string $DBMSConnection
+     * This is a connection method name from our Engine\DBMS class and
+     * it defaults to this model, to be accessed via 
+     * - $this->DB()
+     * or
+     * - $this->DB(TABLE NAME)
+     * Where TABLE NAME is a constant value from Engine\Table class or just a regular name.
+     * 
+     * You can also make queries to other connections via accessing them through
+     * - DBMS::ConnectionName()
+     * Where 'ConnectionName' is a connection method from our Engine\DBMS class
+     */
+    private $DBMSConnection = '';
+
+    /**
+     * ======================
+     * # Fillable starts here 
+     * ======================
+     * 
+     * The fillable method in the helper trait 'ModelHelper' already preloads
+     * this class with all the request body that has been verified, filtered, and validated.
+     * You can overwrite this proceedure by adding a fillable method to this class.
+     * see Engine\Interfaces\ModelInterface class
+     */
+
+
+    /**
+     * @method ModelInterface Create
+     * @return bool
+     * 
+     * This creates a new entry in the database tables
+     */
+    public function Create() : bool
+    {
+       
+    }
+
+    /**
+     * @method ModelInterface Update
+     * @return bool
+     * 
+     * This updates a new entry in the database
+     */
+    public function Update()
+    {
+
+    }
+
+    /**
+     * @method ModelInterface Create
+     * @return bool
+     * 
+     * This delete a record in the database
+     */
+    public function Delete()
+    {
+
+    }
+
+    /**
+     * @method ModelInterface Read
+     * @return bool
+     * 
+     * This reads an entry from the database
+     */
+    public function Read()
+    {
+
+    }
+}

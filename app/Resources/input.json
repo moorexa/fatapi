@@ -1,0 +1,11 @@
+[
+    {
+        "service" : "ExampleService",
+        "method" : "login",
+        "version" : "*",
+        "verb" : "post",
+        "body" : {
+            "firstname" : "required|string|notag"
+        }
+    }
+]

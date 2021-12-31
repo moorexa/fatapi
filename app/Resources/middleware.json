@@ -1,0 +1,9 @@
+{
+    "verbs" : {
+        "POST" : ["Middlewares\\PostMustHaveData"]
+    },
+    "resources" : {
+        "Resources\\ExampleService\\v1\\PostStudent" : [],
+        "Resources\\ExampleService\\v1\\PostStudent::Login" : []
+    }
+}

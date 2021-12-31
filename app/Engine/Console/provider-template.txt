@@ -1,0 +1,12 @@
+<?php
+namespace Resources\{SERVICE}\{VERSION}\Providers;
+
+use Engine\{Request, Response};
+/**
+ * @package {PROVIDER}
+ * @author Amadi Ifeanyi <amadiify.com>
+ */
+trait {PROVIDER}
+{
+
+}

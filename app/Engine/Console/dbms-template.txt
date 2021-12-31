@@ -1,0 +1,16 @@
+    /**
+     * @method DBMS {CONNECTION}
+     * @param string $table
+     * @return DriverInterface|
+     */
+    public static function {CONNECTION}(string $table = '') 
+    {
+        // connection name
+        $connectionName = '';
+
+        // get connection
+        $connection = self::CreateConnection($connectionName);
+
+        // has table
+        return $table != '' ? self::ConnectToTable($connection, $table) : $connection;
+    }

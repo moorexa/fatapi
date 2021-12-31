@@ -1,0 +1,38 @@
+<?php
+namespace Middlewares;
+
+use Closure;
+use Engine\Response;
+use Lightroom\Adapter\ClassManager;
+use Lightroom\Router\Interfaces\MiddlewareInterface;
+/**
+ * @package {MIDDLEWARE}
+ * @author Amadi Ifeanyi <amadiify.com>
+ */
+class {MIDDLEWARE} implements MiddlewareInterface
+{
+    /**
+     * @method MiddlewareInterface request
+     * @param Closure $render
+     * @return void
+     * 
+     * This method holds the waiting request, call render to push view to the top stack.
+     **/
+    public function request(Closure $render) : void
+    {
+        /**
+         * call $render() to continue with request
+         */
+    }
+
+    /**
+     * @method MiddlewareInterface requestClosed
+     * @return void
+     * 
+     * This method would be called when request has been closed.
+     **/
+    public function requestClosed() : void
+    {
+
+    }
+}

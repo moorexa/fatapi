@@ -1,0 +1,22 @@
+{
+    "default" : true,
+    "type" : "api",
+    "url" : "",
+    "response" : {
+        "type" : "application/json"
+    },
+    "routes" : {
+        "service.method" : {
+            "url" : "",
+            "responseType" : "application/json",
+            "method" : "POST"
+        },
+        "service.method2" : {
+            "url" : "",
+            "method" : "PUT",
+            "body" : {
+                "field-name" : "<rule here>"
+            }
+        }
+    }
+}

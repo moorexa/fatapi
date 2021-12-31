@@ -1,0 +1,17 @@
+{
+    "name": "Moorexa Middleware for payloads",
+    "description": "Let's help you manage the payloads with middlewares. You may have to generate the middleware from the cli.",
+    "payloads" : [
+        {"load-requirement":""},
+        {"load-dependency-checker":""},
+        {"load-global-variables":""},
+        {"load-config":""},
+        {"load-security-group":""},
+        {"load-request-manager":""},
+        {"load-database-handler":""},
+        {"script-processor":""},
+        {"load-router":""},
+        {"attach-middleware":""},
+        {"attach-view":""}
+    ]
+}

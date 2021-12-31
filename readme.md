@@ -1,0 +1,509 @@
+# FATAPI
+A Powerful REST API Framework for small and large projects.
+
+| Credits | Link | Bio |
+|----------|------|-----|
+| Moorexa | [www.moorexa.com] | An open source PHP Framework |
+| Amadi Ifeanyi | [www.amadiify.com] | Founder and author of Moorexa and more |
+
+Crafted for PHP developers. It's great for personal, enterprise, and commercial backend applications.
+
+## Architectural Style or Pattern
+1. Event-Bus pattern
+2. Micro-Services
+3. Monolithic or Peer pattern
+
+# Requirements
+1. PHP 7 and above
+2. Knowledge of PHP and a bit of Moorexa Framework
+
+# Introduction
+So why FATAPI? Building backend applications for years led us to this one stop solution. Over the years we've built REST API's with the following request methods **GET, POST, DELETE, PUT** and we've also had to worry about versioning, building light then scalling to micro services, managing multiple endpoints that are procedural, creating standards for our requests and responses even when contracting some part of our backend application to remote developers, making documentation accessible via a special link eg. mydomain.com/api/doc. Yeah, creating this takes so much time, and many startups, developer, or software agency would worry less if they had a foundational system like this that allows connectivity to external services, creating small programs that can be decoupled into services when the business scales, building strict entities that is consitent across versions, version control services and methods, reduce cost to manage multiple endpoints and use only **GET** and **POST** request methods with a meta data to fetch and update a services. The list can go on and on, but that's where FATAPI comes in. With it, you can build backend applications that allows for all this possiblities and more.
+
+# Find help for a request method 
+Starting new on fatapi? You can access a quick help for specific request methods. See table below
+| method | endpoint | example |
+|--------|----------|---------|
+| GET | domain.com/help | localhost:8080/fatapi/help |
+| POST | domain.com/help | localhost:8080/fatapi/help |
+
+# Avaliable CLI Commands
+Here are commands that can help you speed up development.
+
+| Command | Example | Description |
+|---------|----------|------------|
+| make | php assist fatapi make user | This creates a new service in **app/Resources/** |
+| make | php assist fatapi make user:v2 | This creates a new version for service user in **app/Resources/** |
+| make:ext | php assist fatapi make:ext user | This creates a new service that connects to an external url in  **app/Resources/** |
+| make:ext | php assist fatapi make:ext user:v2 | This creates a new version for an external service that connects to url in  **app/Resources/** |
+| make:ware | php assist fatapi make:ware myMiddleware | This create a middleware that can be attached to a service or request method in **app/Middlewares/** |
+| make:model | php assist fatapi make:model service/modelName | This create a new model for a particular service in **app/Resources/{service}/{version}/Model** |
+| make:model | php assist fatapi make:model service/modelName:v2 | This create a new model for a particular service in **app/Resources/{service}/{version}/Model** |
+| make:dbms | php assist fatapi make:dbms {connectionName} | This create a new connection method for your models in **app/Engine/DBMS.php** |
+
+# Resource configuration style
+Here you can instead generate a config.json file and transfer request to an external service using a general style or separate channel with different request method.
+
+Here is a general request style that takes all the request and just push to one endpoint.
+
+## General request style 1
+```json
+{
+    "default": true,
+    "type" : "api",
+    "url" : "http://google.com/account/v1",
+    "response" : {
+        "type" : "application/json"
+    }
+}
+```
+## Here is a breakdown of what's happening
+
+| Default | Description |
+|------|-----|
+| True | Would tell the system to use this configuration file |
+
+| Type | Description |
+|------|-----|
+| Api | Would trigger an HTTP request to the external server |
+
+| URL | Description |
+|------|-----|
+| Absolute URL | This URL is the server address that takes an route all requests |
+
+| Response | Description |
+|------|-----|
+| type | This demands that the response type must be **application/json**  |
+
+## Make GET or POST request using Socket.io
+At any point in time you desire to utilize socket programming to facilitate communication instead of HTTP requests, we just might have a simple solution for you. Before you continue, ensure that you have 
+```php 
+composer require workerman/phpsocket.io
+``` 
+installed or just run 
+```php 
+php assist install socket
+``` 
+from your cmd or terminal to install all dependencies for socket.io.
+
+Next, we start our socket server by running the following command
+```php
+php assist socket
+```
+This would start workerman socket server with the address **ws://0.0.0.0:8082**. And you can change this default settings here **src/environment.yaml**
+
+## Sending a socket.io request with Javascript
+To do this, you must have obtained socket.io cdn or installed socket.io client. Here, we would demostrate a complete proceedure to get you up to speed.
+
+```html
+<html lang="en">
+<body>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.4.0/socket.io.min.js"></script>
+    <script>
+        let socket = io.connect('ws://0.0.0.0:8082');
+        socket.on('connect', function () {
+
+            console.log('connected');
+
+            // making a get request
+            socket.emit('meta.api', JSON.stringify({
+                meta : {
+                    service : 'user',
+                    method : 'all',
+                },
+                header : {},
+                version: 'v1',
+                signature: '67shdjddd',
+                method: 'get',
+                query: {
+                    limit: 20
+                }   
+            }));
+
+            // we can now listen for a response from the socket server 
+            // using the unqiue signature.
+            socket.on('67shdjddd', (data)=>{
+                console.log(data);
+            });
+
+            socket.on('disconnect', function () {
+                console.log('disconnected');
+            });
+        });
+    </script>
+</body>
+</html>
+```
+
+## Sending a socket.io request with PHP
+To do this, you don't need to install any dependency. Here, we would demostrate a complete proceedure to get you up to speed.
+
+```php
+use Lightroom\Socket\SocketClient;
+
+// create connectionn
+$socket = new SocketClient('0.0.0.0', '8082');
+
+// you can queue more than one request
+$socket->queue('meta.api', json_encode([
+    'meta'     => [
+        'service'   => 'user',
+        'method'    => 'all'
+    ],
+    'header'    => [],
+    'method'    => 'get',
+    'version'   => 'v1',
+    'signature' => '8337sijdfu',
+    'query'      => [
+        'limit' => 20,
+    ]
+]));
+
+// send all queues now
+$socket->send();
+```
+At the moment, it makes sense to use the PHP implementation if you don't need to wait and listen for a response as demostrated for javascript. It comes handy when you need to send data to other services within the program.
+
+Here is a complete breakdown on the sample data sent to **meta.api**
+
+| Key | Value | Required | Description |
+|-----|-------|-------------|-----------|
+| meta | Object | yes | Request meta data for routing |
+| header | Object | no | Request headers |
+| version | String | no | Service version number |
+| signature | String | yes | Digital identity for every request. Every response would be sent to that signature id. You should always change this for new requests. |
+| method | String | yes | Request method. eg (post,get etc.) |
+| query | Object | no | GET query data |
+| body | Object | no | POST request body |
+
+
+# How to use a model in a service
+Lets assume that you have created a service and a model. Your model should be avaliable to use from a namespace.
+
+For this example, we would assume a test model in **app/Resources/Student/v1/Model/**. See a summary of what it should look like;
+
+```php
+namespace Resources\Student\v1\Model;
+
+use Engine\{Interfaces\ModelInterface, DBMS, Table, ModelHelper};
+/**
+ * @package Test Model
+ * @author Amadi Ifeanyi <amadiify.com>
+ */
+class Test implements ModelInterface
+{
+    /**
+     * This 'ModelHelper' trait contains the fillable method and DB method.
+     */
+    use ModelHelper;
+
+    /**
+     * @var int $id
+     * This is significant to your model class. It gets its value when two things happens
+     * 1. The system encounters x-meta-id in the request header
+     * 2. The POST body sent contains a key 'id' along side a number as its value
+     */
+    public $id = 0;
+
+    ....
+}
+```
+
+Now for every request that's sent to a service, there exists a **Request** and **Response** class parameters. And this **Request** class holds the request data that has been validated and verified along side a method called **useModel()** that takes a model class name as a string and loads all the request data into that class for database operations. To demostrate this, we would assume a POST request to the Student service to the default Init method.
+
+```php
+namespace Resources\Student\v1;
+
+/**
+ * @method PostStudent Init
+ * @param Request $request
+ * @param Response $response
+ * @return void
+ * 
+ * @start.doc
+ * 
+ * .. Your documentation content goes in here.
+ * 
+ */
+public function Init(Request $request, Response $response) : void
+{
+    // our post data may contain
+    // username, password, etc
+    // next we just push that data to our test model and then run any of the
+    // crud operations
+    $model = $request->useModel(Model\Test::class);
+    // this reads (Resources\Student\v1\Model\Test)
+
+    // next we can run any operation that's avaliable in this model class
+    // eg
+    $model->Update(); // update a record
+
+    // sample response
+    $response->success('It works!');
+}
+```
+
+# Getting a request ID
+You have passed an ID to your request parameter or used the **x-meta-id** method to send an ID with your request? See how to get it below from a service method.
+```php
+namespace Resources\Student\v1;
+
+/**
+ * @method PostStudent Init
+ * @param Request $request
+ * @param Response $response
+ * @return void
+ * 
+ * @start.doc
+ * 
+ * .. Your documentation content goes in here.
+ * 
+ */
+public function Init(Request $request, Response $response) : void
+{
+    // our id is part of the request
+
+    // sample response
+    $response->success('It works!', [
+        'id' => $request->id
+    ]);
+}
+```
+
+# How to connect your model to a database
+First you need to have created a model file, next we create a new connection with the command below
+```php
+php assist fatapi make:dbms sessionConnection
+```
+Where **sessionConnection** can be any valid function name.
+
+This would create a new method **sessionConnection()** in **Engine\DBMS** class located in **app/Engine/DBMS.php**.
+
+The content of this method should look like this:
+```php
+/**
+ * @method DBMS sessionConnection
+ * @param string $table
+ * @return DriverInterface|
+ */
+public static function sessionConnection(string $table = '') 
+{
+    // connection name
+    $connectionName = '';
+
+    // get connection
+    $connection = self::CreateConnection($connectionName);
+
+    // has table
+    return $table != '' ? self::ConnectToTable($connection, $table) : $connection;
+}
+```
+Next, you set the value of **$connectionName** to match a connection key created in Moorexa **src/database/database.php** file. An example of this could be the default 'new-db' connection key. So now, your connection method should look like this
+```php
+/**
+ * @method DBMS sessionConnection
+ * @param string $table
+ * @return DriverInterface|
+ */
+public static function sessionConnection(string $table = '') 
+{
+    // connection name
+    $connectionName = 'new-db';
+
+    // get connection
+    $connection = self::CreateConnection($connectionName);
+
+    // has table
+    return $table != '' ? self::ConnectToTable($connection, $table) : $connection;
+}
+```
+
+If **connectionName** is left empty, Moorexa would try to use the default connection settings in **src/database/database.php**. Which means that you have to set a value for **development** or **live**. See example below
+```php
+->default(['development' => 'new-db', 'live' => '']);
+```
+
+Perharps you might like to add another connection setting so you make do of multiple connection settings, use the command below
+```php
+php assist database add connectionName
+```
+Where connectionName is something you would like to identify that connection with.
+
+Next you open your model file and set the value of **$DBMSConnection** to the new method **sessionConnection or your unquieMethodName** created in **Engine\DBMS** class located in **app/Engine/DBMS.php**. See example below;
+```php
+namespace Resources\Student\v1\Model;
+...
+/**
+ * @package Test Model
+ * @author Amadi Ifeanyi <amadiify.com>
+ */
+class Test implements ModelInterface
+{
+    ...
+    /**
+     * @var string $DBMSConnection
+     * This is a connection method name from our Engine\DBMS class and
+     * it defaults to this model, to be accessed via 
+     * - $this->DB()
+     * or
+     * - $this->DB(TABLE NAME)
+     * Where TABLE NAME is a constant value from Engine\Table class or just a regular name.
+     * 
+     * You can also make queries to other connections via accessing them through
+     * - DBMS::ConnectionName()
+     * Where 'ConnectionName' is a connection method from our Engine\DBMS class
+     */
+    private $DBMSConnection = 'sessionConnection';
+}
+```
+Now, your model is connected to a database using that connection method which typically fulfils every query through a connection key found in **src/database/database.php**.
+
+# How to apply a middleware to a resource
+Middleware provides services to your resources beyond those available from the core system. It can be described as "service glue". Creating one is simple and can be done with the following command below, where MIDDLEWARE_NAME is something unquiue to you.
+```php
+php assist fatapi make:ware MIDDLEWARE_NAME
+```
+Lets assume that we have called our middleware **MustBeAuthorized**, now we can apply it to a resource service class or method. To do this, open **app/Resources/middleware.json**. To demostrate this, we would apply this for every post requests particular to a service called **Student**, We can even go further by adding more to the array or be direct to a specific class method **Profile**.
+```json
+{
+    "verbs" : {
+        "POST" : ["Middlewares\\PostMustHaveData"]
+    },
+    "resources" : {
+        "Resources\\Student\\v1\\PostStudent" : ["Middlewares\\MustBeAuthorized",],
+        "Resources\\Student\\v1\\PostStudent::Profile" : ["Middlewares\\MustBeAuthorized or another middleware"]
+    }
+}
+```
+
+# How to filter every input from a request
+You just need to add an entry to the **app/Resources/input.json** file and then the system ensures that what is presented to you has been checked and passed. Else, it stops processing the request and asks the developer for the correct/required data. Now, lets take an example to demostrate, we call this service **student** with a method called **login**. This request method will be POST and would trigger the class file **PostStudent** in the Student resource folder. Now, to lock on this request for the required data we just add this to our **app/Resources/input.json** file
+
+```json
+[
+    ...
+
+    {
+        "service" : "student",
+        "method" : "login",
+        "version" : "*",
+        "verb" : "post",
+        "body" : {
+            "username" : "required|string|notag",
+            "password" : "required|string|min:2"
+        }
+    }
+]
+```
+If this is successful, it makes the data (username and password) avaliable to you via the **Engine\Request** class. And to demostrate see
+```php
+namespace Resources\Student\v1;
+
+/**
+ * @method PostStudent Init
+ * @param Request $request
+ * @param Response $response
+ * @return void
+ * 
+ * @start.doc
+ * 
+ * .. Your documentation content goes in here.
+ * 
+ */
+public function Login(Request $request, Response $response) : void
+{
+    // get username
+    echo $request->username;
+
+    // get password
+    echo $request->password;
+
+    // sample response
+    $response->success('It works!', [
+        'id' => $request->id
+    ]);
+}
+```
+Now using a model as showned in this documentation would pre-fill this request data to your model or you customize your model like this also;
+
+```php
+namespace Resources\Student\v1\Model;
+
+use Engine\{Interfaces\ModelInterface, DBMS, Table, ModelHelper};
+/**
+ * @package Test Model
+ * @author Amadi Ifeanyi <amadiify.com>
+ */
+class Test implements ModelInterface
+{
+    /**
+     * This 'ModelHelper' trait contains the fillable method and DB method.
+     */
+    use ModelHelper;
+
+    /**
+     * @var int $id
+     * This is significant to your model class. It gets its value when two things happens
+     * 1. The system encounters x-meta-id in the request header
+     * 2. The POST body sent contains a key 'id' along side a number as its value
+     */
+    public $id = 0;
+
+    // username
+    public $Username;
+
+    // password
+    private $Password;
+
+    // then add the fillable method
+    /**
+     * @method ModelInterface Fillable
+     * @param array $data
+     * @return void
+     * 
+     * Has data that can be populated to the class 
+     */
+    public function Fillable(array $data) : void
+    {
+        // set the username
+        $this->Username = $data['username'];
+
+        // set the password
+        $this->Password = $data['password'];
+    }
+
+    ....
+}
+```
+
+# How to switch versions
+You can do this from the **app/Resources/versioning.json** file for different request methods. Lets paint a scenario, You've built your services and now you want your consumers to use a new version without having to update your frontend? This is possible for not just a service but for a specific method also. How do we do this? see example below 
+```json
+{
+    "POST" : {
+        "ExampleService" : {
+            "version" : "v1"
+        },
+    },
+    
+    "GET" : {
+        "ExampleService" : {
+            "version" : "v2"
+        }
+    }
+}
+```
+ExampleService is just a placeholder and can be your service name eg (student, user, account, etc.). To update the default version of a service method, just add a dot(.) followed by the service method. See example below;
+
+```json
+{
+    "POST" : {
+        ...
+        "ExampleService.method" : {
+            "version" : "v2"
+        },
+    },
+    ...
+}
+```

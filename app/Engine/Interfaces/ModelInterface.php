@@ -1,0 +1,56 @@
+<?php
+namespace Engine\Interfaces;
+/**
+ * @package Model Interface
+ * @author Amadi Ifeanyi <amadiify.com>
+ */
+interface ModelInterface
+{
+    /**
+     * @method ModelInterface Fillable
+     * @param array $data
+     * @return void
+     * 
+     * Has data that can be populated to the class 
+     */
+    public function Fillable(array $data) : void;
+
+    /**
+     * @method ModelInterface Query
+     * @param string $tableName
+     * @return mixed
+     */
+    public function DB(string $tableName = '');
+
+    /**
+     * @method ModelInterface Create
+     * @return bool
+     * 
+     * This creates a new entry in the database tables
+     */
+    public function Create() : bool;
+
+    /**
+     * @method ModelInterface Update
+     * @return bool
+     * 
+     * This updates a new entry in the database
+     */
+    public function Update();
+
+    /**
+     * @method ModelInterface Create
+     * @return bool
+     * 
+     * This delete a record in the database
+     */
+    public function Delete();
+
+    /**
+     * @method ModelInterface Read
+     * @return bool
+     * 
+     * This reads an entry from the database
+     */
+    public function Read();
+}

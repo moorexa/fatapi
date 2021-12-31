@@ -1,0 +1,17 @@
+{
+    "POST" : {
+        "ExampleService" : {
+            "version" : "v1"
+        },
+        "ExampleService.login" : {
+            "version" : "v1"
+        }
+        
+    },
+    
+    "GET" : {
+        "ExampleService" : {
+            
+        }
+    }
+}

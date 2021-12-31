@@ -1,0 +1,173 @@
+monolog:
+  # period can either be (daily,weekly,monthly or yearly)
+  period: daily
+  # intervals for additional support
+  config:
+  # mail configuration for monolog
+  - mail: 
+    # default user for mail
+    use: account
+  # slack configuration for monolog
+  - slack:
+    # slack configuration
+    email : 'slack email'
+    # set triggers
+  - triggers:
+    # use mail driver when critical
+    critical: 
+    - mail
+    - slack
+
+# Session configuration
+session:
+  # set default driver (Database|File|Redis|Default)
+  driver: Default
+  # set driver class.
+  # class must implements Lightroom\Requests\Interfaces\DatabaseDriverInterface
+  class: Lightroom\Requests\Drivers\Database\Session
+  # set the connection identifier for session database driver, just in case you don't want to use the default
+  # you can always switch connection with env_set('session/identifier', '<identifier>')
+  identifier:
+
+# Cookie configuration
+cookie:
+  # set default driver (Database|File|Redis|Default)
+  driver: Default
+  # set driver class.
+  # class must implements Lightroom\Requests\Interfaces\DatabaseDriverInterface
+  class: Lightroom\Requests\Drivers\Database\Cookie
+  # set the connection identifier for cookie database driver, just in case you don't want to use the default
+  # you can always switch connection with env_set('cookie/identifier', '<identifier>')
+  identifier:
+
+# Database global configuration
+database:
+  # set database mode. can either be (development | production)
+  mode: development
+  # set default connection source for our drivers
+  # configuration settings must have been made in database/database.php
+  drivers:
+    mysql:
+    mssql: 
+    sqlite: 
+    postgresql: 
+  # block a subscriber from listening to queries, committing to database or rolling back transactions
+  blocked_subscribers:
+    - robot
+    - faker
+  # state manager database settings
+  state_manager_sqlite_db : 'state_manager.db'
+
+# Swift mailer configuration
+swiftmailer:
+  # outgoing server
+  # eg (mail.example.com or smtp.example.com)
+  outgoing: ''
+  # transport (default is 0)
+  # change to (/usr/sbin/sendmail -bs) to use Sendmail as a transport:
+  transport: 0
+  # connection port
+  port : 2525
+  # smtp encryption (tls, ssl)
+  encryption : 'ssl'
+  # default user
+  default: account
+  # users, multiple users supported
+  users :
+   account:
+      #eg info@example.com
+      user: ''
+      # user password
+      password: ''
+# deploy configuration
+deploy:
+  # set the url
+  url : 'http://'
+  # set the token
+  token : ''
+# error helper class
+pageNotFound: ''
+# enable template caching
+enableCaching : 'yes'
+# lets tell the system which event to trigger
+# they would be triggered if registered, this is just to help us maintain speed
+events:
+  # triggers for 'ev'
+  # you can listen for them with event('ev')->on('event name', closure function)
+  ev:
+    - 'controller.ready'
+    - 'view.load'
+    - 'model.load'
+    - 'controller.provider.ready'
+    - 'view.provider.ready'
+    - 'model.ready'
+    - 'redirection'
+    - 'view.action.ready'
+    - 'partial.ready'
+
+# http request manager configuration
+httpClient:
+    # set the endpoint
+    endpoint : ''
+    # set default headers
+    headers : 
+      # set the content type
+      Content-Type: 'application/json'
+    # set guzzle client config
+    guzzleConfig : 
+      # do not verify ssl
+      verify : false
+# socket server configuration
+socket:
+  # set the listening port
+  port : 3089
+  # set the socket address
+  address : '0.0.0.0' 
+  # set the default socket handler
+  handler : worker-man
+  # socket handlers
+  handlers:
+    # socketIo worker man
+    worker-man : 
+      #handler
+      handler : Lightroom\Socket\WorkerManSocketHandler
+      # configuration
+      port : 8082
+      # context or handler config
+      context :
+      # start command
+      command : 'start'
+      # listeners
+      listeners :
+        - Engine\MetaDataSocket
+    # Ratchet
+    ratchet : Lightroom\Socket\RatchetSocketHandler
+  # add socket event listeners
+  listeners:
+    # You can find this class in src/lab/library/Sockets
+    - Sockets\SocketEventHandler
+# rabbitmq server configuration for queues
+# Doc guides: https://rabbitmq.com/documentation.html
+# Please ensure you have rabbitmq installed on your machine
+# To start the server, just run 'rabbitmq-server' from your terminal, 
+# on a new tab run 'php assist start-rabbitmq-worker' to listen for jobs. See Moorexa documentation.
+rabbitmq:
+  # set the connection address
+  address : 'localhost'
+  # set the connection port
+  port : '5672'
+  # set the username
+  username : 'guest'
+  # set the password 
+  password : 'guest'
+  # set the default queue name
+  queueName : 'task_queue'
+  # callback class with taskSent, taskReceived, taskComplete methods
+  # class must implement Lightroom\Queues\Interfaces\CallbackInterface
+  callback : 
+# file db configuration
+filedb:
+  # tables folder
+  basedir : '%PATH_TO_DATABASE%/Filedb/'
+  # table extension
+  extension : 'json'

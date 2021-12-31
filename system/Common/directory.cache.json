@@ -1,0 +1,10 @@
+{
+    ".\/actions\/===FetchUser.php": ".\/actions\/\/Users\/Fetch\/FetchUser.php",
+    ".\/actions\/===Record.php": ".\/actions\/\/Record.php",
+    ".\/actions\/===CreateRoutingCenter.php": ".\/actions\/\/RoutingCenter\/Create\/CreateRoutingCenter.php",
+    ".\/actions\/===FetchYear.php": ".\/actions\/\/Years\/Fetch\/FetchYear.php",
+    ".\/verbs\/===Handler.php": ".\/verbs\/\/GET\/Handler.php",
+    ".\/api\/Verb\/===Handler.php": ".\/api\/Verb\/\/GET\/Handler.php",
+    ".\/api\/Engine\/===MetaDataService.php": ".\/api\/Engine\/\/MetaDataService.php",
+    ".\/api\/Engine\/===ActionInterface.php": ".\/api\/Engine\/\/Interfaces\/ActionInterface.php"
+}
