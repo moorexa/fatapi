@@ -25,6 +25,15 @@ class RequestData implements ArrayAccess
         if (isset($this->data[$name])) return $this->data[$name];
     }
 
+    // load from data or load default
+    public function get(string $name, $default = null)
+    {
+        if (isset($this->data[$name])) return $this->data[$name];
+
+        // return default
+        return $default;
+    }
+
     // get all data
     public function getData() : array
     {
