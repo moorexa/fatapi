@@ -208,8 +208,11 @@ class Request implements Interfaces\RequestInterface
 
                 endif;
 
+                // @var bool $isMethod
+                $isMethod = ($data->service.'.'.$data->method) == $resource ? true : (($data->service.'.'.self::formatName($data->method)) == $resource ? true : false);
+
                 // Has resource, verb, and version to continue
-                if (($data->service.'.'.$data->method) == $resource && strtoupper($data->verb) == $verb) :
+                if ($isMethod && strtoupper($data->verb) == $verb) :
 
                     // clean up data version
                     $data->version = preg_replace('/[\s]+/', '', $data->version);
@@ -360,5 +363,25 @@ class Request implements Interfaces\RequestInterface
 
         // return model
         return $model;
+    }
+
+    /**
+     * @method Request formatName
+     * @param string $line
+     * @return string
+     */
+    private static function formatName(string $line) : string 
+    {
+        // Remove '-'
+        $line = str_replace('-', ' ', $line);
+
+        // camelcase next
+        $line = ucwords($line);
+
+        // trim off spaces
+        $line = preg_replace('/[\s]+/', '', $line);
+
+        // return line
+        return $line;
     }
 }
