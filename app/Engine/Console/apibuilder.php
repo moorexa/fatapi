@@ -233,6 +233,9 @@ if (count($arguments) > 0 && isset($arguments[ACTION])) :
             // get last param
             $last = end($arguments);
 
+            // backup path
+            $backupPath = $path;
+
             // post or get
             if ($last == '-post' || $last == '-get') :
 
@@ -289,17 +292,31 @@ if (count($arguments) > 0 && isset($arguments[ACTION])) :
             // have a file
             if (!is_file($path)) return Assist::out('Could not proceed with request. We could not load a destination. Try adding -post or -end at the end of the command', $assist->ansii('red'));
 
+            // use backup
+            $useBackup = false;
+
+            // use backup path
+            if (stripos($path, 'provider') !== false) :
+                
+                // update bool
+                $useBackup = true;
+
+                // update backup path
+                $backupPath .= '/Post'.$service.'.php';
+
+            endif;
+
             // include file
-            include_once $path;
+            include_once ($useBackup ? $backupPath : $path);
 
             // get class name
-            $basename = basename($path);
+            $basename = basename(($useBackup ? $backupPath : $path));
 
             // remove extension
             $className = substr($basename, 0, strpos($basename, '.'));
 
             // load content
-            $content = file_get_contents($path);
+            $content = file_get_contents(($useBackup ? $backupPath : $path));
 
             // get namespace
             $namespace = '';
@@ -317,6 +334,9 @@ if (count($arguments) > 0 && isset($arguments[ACTION])) :
                 $namespace = trim(str_replace('namespace', '', $namespace));
 
             endif;
+
+            // reload content
+            if ($useBackup) $content = file_get_contents($path);
 
             // add namespace to class
             $classNamespace = ($namespace != '') ? $namespace . '\\' . $className : $className;
@@ -346,7 +366,7 @@ if (count($arguments) > 0 && isset($arguments[ACTION])) :
             // add template data
             $content .= "\n" . $template . "\n}";
             
-            // update dbms file
+            // update file
             file_put_contents($path, $content);
 
             // all good
