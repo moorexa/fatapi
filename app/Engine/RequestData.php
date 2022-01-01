@@ -45,7 +45,7 @@ class RequestData implements ArrayAccess
     // @link: https://www.php.net/manual/en/class.arrayaccess.php
     public function offsetSet($offset, $value)
     {
-        if (!empty($offset)) $this->data[$offset] = $value;
+        if (!empty($offset) && isset($this->data[$offset])) $this->data[$offset] = $value;
     }
 
     // check if offset exists
