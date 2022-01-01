@@ -50,7 +50,7 @@ php assist fatapi make {service}
 ```
 where {service} can be a string without special characters execpt (_) and (-) eg. service-name, myservice, user, account, etc.
 
-By default, if you don't include a version to the command it generates with the default version **v1**. But just incase you want a new version, just specify it as seen below
+By default, if you don't include a version to the command, it generates that service with the default version **v1**. But just incase you want a new version, just specify it as seen below
 ```php
 php assist fatapi make {service}:v2
 ```
