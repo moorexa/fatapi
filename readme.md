@@ -666,3 +666,10 @@ ExampleService is just a placeholder and can be your service name eg (student, u
     ...
 }
 ```
+
+# Default Query Filter for Get Requests
+1. ?sort=asc or desc
+2. ?column=* or name,age etc
+3. ?limit=4 or more
+4. ?sortby=column|asc or desc
+5. 

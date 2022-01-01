@@ -2,6 +2,7 @@
 namespace Resources\{SERVICE}\{VERSION}\Model;
 
 use Engine\RequestData;
+use function Lightroom\Requests\Functions\{get};
 use Engine\{Interfaces\ModelInterface, DBMS, Table, ModelHelper};
 /**
  * @package {MODEL} Model
@@ -13,6 +14,11 @@ class {MODEL} implements ModelInterface
      * This 'ModelHelper' trait contains the fillable method and DB method.
      */
     use ModelHelper;
+
+    /**
+     * This holds the primary key for database table.
+     */
+    const PRIMARY_KEY = '';
 
     /**
      * @var int $id
@@ -72,7 +78,22 @@ class {MODEL} implements ModelInterface
      */
     public function Create() : bool
     {
-       
+       // @var array $data 
+       $data = [
+
+       ];
+
+       // @var bool $created 
+       $created = false;
+
+       // don't forget to pass a table name to DB()
+       $table = $this->DB();
+
+       // we can insert data
+       if ($table->insert($data)->go()) $created = true;
+
+       // return bool
+       return $created;
     }
 
     /**
@@ -83,7 +104,31 @@ class {MODEL} implements ModelInterface
      */
     public function Update()
     {
+       // @var array $data 
+       $data = [
 
+       ];
+
+       // don't forget to pass a table name to DB()
+       $table = $this->DB();
+
+       // updated
+       $updated = false;
+
+       // get the id
+       $ID = $this->id;
+
+       // can we can update data
+       if ($table->update($data)->where([static::PRIMARY_KEY => $ID])->go()) $updated = true;
+
+       // let's set the id
+       get()->set('rowid', $ID);
+
+       // return array data
+       return [
+           'updated'    => $updated,
+           'data'       => $this->Read()
+       ];
     }
 
     /**
@@ -94,7 +139,20 @@ class {MODEL} implements ModelInterface
      */
     public function Delete()
     {
+       // don't forget to pass a table name to DB()
+       $table = $this->DB();
 
+       // deleted
+       $deleted = false;
+
+       // get the id
+       $ID = $this->id;
+
+       // can we can delete row?
+       if ($table->delete()->where([static::PRIMARY_KEY => $ID])->go()) $deleted = true;
+
+       // return boolean
+       return $deleted;
     }
 
     /**
@@ -111,7 +169,7 @@ class {MODEL} implements ModelInterface
 
             // your table primary key
             // useful for sorting in asc or desc order
-            'primary' => '', 
+            'primary' => static::PRIMARY_KEY, 
 
             // default where statement to send alongside this query
             'where' => [
@@ -139,6 +197,29 @@ class {MODEL} implements ModelInterface
         ]);
 
         // You can run this statement when ready with
-        // $query->go();
+        $result = $query->go();
+
+        // build data
+        $data = [];
+
+        // are we good ?
+        if ($result->rowCount() > 0) while($row = $result->fetch(FETCH_ASSOC)) :
+
+            // create instance
+            $model = new self;
+
+            // load request data
+            $requestData = new RequestData($row);
+
+            // add to fillable
+            $model->Fillable($requestData);
+
+            // push to data
+            $data[] = $model->cleanUpNullData();
+
+        endwhile;
+
+        // return data
+        return $data;
     }
 }
