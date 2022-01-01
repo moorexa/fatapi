@@ -1,5 +1,7 @@
 <?php
 namespace Engine\Interfaces;
+
+use Engine\RequestData;
 /**
  * @package Model Interface
  * @author Amadi Ifeanyi <amadiify.com>
@@ -8,12 +10,12 @@ interface ModelInterface
 {
     /**
      * @method ModelInterface Fillable
-     * @param array $data
+     * @param RequestData $data
      * @return void
      * 
      * Has data that can be populated to the class 
      */
-    public function Fillable(array $data) : void;
+    public function Fillable(RequestData $data) : void;
 
     /**
      * @method ModelInterface Query

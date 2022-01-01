@@ -359,7 +359,7 @@ class Request implements Interfaces\RequestInterface
         endif;
 
         // load fillables
-        $model->Fillable($data);
+        $model->Fillable(new RequestData($data));
 
         // return model
         return $model;

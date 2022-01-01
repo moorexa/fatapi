@@ -343,6 +343,7 @@ For this example, we would assume a test model in **app/Resources/Student/v1/Mod
 ```php
 namespace Resources\Student\v1\Model;
 
+use Engine\RequestData;
 use Engine\{Interfaces\ModelInterface, DBMS, Table, ModelHelper};
 /**
  * @package Test Model
@@ -587,6 +588,7 @@ Now using a model as showned in this documentation would pre-fill this request d
 ```php
 namespace Resources\Student\v1\Model;
 
+use Engine\RequestData;
 use Engine\{Interfaces\ModelInterface, DBMS, Table, ModelHelper};
 /**
  * @package Test Model
@@ -616,18 +618,18 @@ class Test implements ModelInterface
     // then add the fillable method
     /**
      * @method ModelInterface Fillable
-     * @param array $data
+     * @param RequestData $data
      * @return void
      * 
      * Has data that can be populated to the class 
      */
-    public function Fillable(array $data) : void
+    public function Fillable(RequestData $data) : void
     {
         // set the username
-        $this->Username = $data['username'];
+        $this->Username = $data->username;
 
         // set the password
-        $this->Password = $data['password'];
+        $this->Password = $data->password;
     }
 
     ....

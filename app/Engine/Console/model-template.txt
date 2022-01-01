@@ -1,6 +1,7 @@
 <?php
 namespace Resources\{SERVICE}\{VERSION}\Model;
 
+use Engine\RequestData;
 use Engine\{Interfaces\ModelInterface, DBMS, Table, ModelHelper};
 /**
  * @package {MODEL} Model
@@ -47,6 +48,21 @@ class {MODEL} implements ModelInterface
      * see Engine\Interfaces\ModelInterface class
      */
 
+    /**
+     * @method ModelInterface Fillable
+     * @param RequestData $data
+     * @return void
+     * 
+     * Has data that can be populated to the class 
+     */
+    public function Fillable(RequestData $data) : void
+    {
+        // get data
+        $requestData = $data->getData();
+
+        // unpack data
+        foreach ($requestData as $key => $value) $this->{$key} = $value;
+    }
 
     /**
      * @method ModelInterface Create

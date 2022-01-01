@@ -1,7 +1,8 @@
 <?php
 namespace Engine;
 
-use function Lightroom\Database\Functions\{db};
+use Engine\RequestData;
+use function Lightroom\Database\Functions\{db_with, db};
 /**
  * @package ModelHelper
  * @author Amadi Ifeanyi <amadiify.com>
@@ -10,15 +11,18 @@ trait ModelHelper
 {
     /**
      * @method ModelInterface Fillable
-     * @param array $data
+     * @param RequestData $data
      * @return void
      * 
      * Has data that can be populated to the class 
      */
-    public function Fillable(array $data) : void
+    public function Fillable(RequestData $data) : void
     {
+        // get data
+        $requestData = $data->getData();
+
         // unpack data
-        foreach ($data as $key => $value) $this->{$key} = $value;
+        foreach ($requestData as $key => $value) $this->{$key} = $value;
     }
 
     /**
