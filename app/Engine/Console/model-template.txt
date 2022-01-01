@@ -3,7 +3,6 @@ namespace Resources\{SERVICE}\{VERSION}\Model;
 
 use Engine\RequestData;
 use Engine\{Interfaces\ModelInterface, DBMS, Table, ModelHelper};
-use Lightroom\Database\Interfaces\QueryBuilderInterface as QueryBuilder;
 /**
  * @package {MODEL} Model
  * @author Amadi Ifeanyi <amadiify.com>
@@ -106,19 +105,40 @@ class {MODEL} implements ModelInterface
      */
     public function Read()
     {
+        // @var Query $query
+        // don't forget to pass a table name to DB()
+        $query = $this->Filter($this->DB(), [
 
-    }
+            // your table primary key
+            // useful for sorting in asc or desc order
+            'primary' => '', 
 
-    /**
-     * @method ModelInterface Filter
-     * @param QueryBuilder $builder
-     * @return QueryBuilder
-     * 
-     * This method would help us include filters into our queries,
-     * You just need to pass your builder query into this function before adding ->go(); 
-     */
-    public function Filter(QueryBuilder $builder) : QueryBuilder
-    {
+            // default where statement to send alongside this query
+            'where' => [
 
+            ], 
+
+            // set what column to fetch 
+            'column' => '*',
+
+            // should contain allowed columns that a column query can collect
+            // eg. ?column=name,age
+            // you can now reference them to your table column
+            // eg. name => account_name
+            'allowedColumns' => [
+                
+            ],
+
+            // should contain a list of additional GET queries you can take
+            // eg. ?visible=1
+            // you can now reference this keys to a particular column
+            // eg. visible = visibility
+            'query' => [
+                
+            ]
+        ]);
+
+        // You can run this statement when ready with
+        // $query->go();
     }
 }
