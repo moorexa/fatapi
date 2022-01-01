@@ -124,4 +124,23 @@ trait ModelHelper
             $builder->limit(0, get()->limit);
         });
     }
+
+    /**
+     * @method ModelHelper cleanUpNullData
+     * @return object
+     */
+    public function cleanUpNullData() : object
+    {   
+        // load all properties
+        $properties = json_decode(json_encode($this));
+
+        // now we create an empty array
+        $notNullData = [];
+
+        // we loop through
+        foreach ($properties as $key => $value) if ($value != null) $notNullData[$key] = $value;
+
+        // return object
+        return (object) $notNullData;
+    }   
 }
