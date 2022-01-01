@@ -40,6 +40,77 @@ Here are commands that can help you speed up development.
 | make:model | php assist fatapi make:model service/modelName | This create a new model for a particular service in **app/Resources/{service}/{version}/Model** |
 | make:model | php assist fatapi make:model service/modelName:v2 | This create a new model for a particular service in **app/Resources/{service}/{version}/Model** |
 | make:dbms | php assist fatapi make:dbms {connectionName} | This create a new connection method for your models in **app/Engine/DBMS.php** |
+| make:route | php assist fatapi make:route {service}/{routeName} | This create a new route method for a service in **app/Resources/{service}/{version}** |
+
+# How to create a new service
+Services are like resources that contains one or more routes. They are packed with providers, models and some helpful classes and methods for building a functional and scalable systems.
+Here we demostrate how to use the command line to generate one.
+```php
+php assist fatapi make {service}
+```
+where {service} can be a string without special characters execpt (_) and (-) eg. service-name, myservice, user, account, etc.
+
+By default, if you don't include a version to the command it generates with the default version **v1**. But just incase you want a new version, just specify it as seen below
+```php
+php assist fatapi make {service}:v2
+```
+
+After creating a service called **User** for example on version **v1** you should see the following files and folders
+```php
+- v1/
+    - Documentation/
+        - GetUser.md
+        - PostUser.md
+    - Model/
+    - Providers/
+        - CreateProvider.php
+        - UpdateProvider.php
+        - DeleteProvider.php
+    - PostUser.php
+    - GetUser.php
+- readme.md
+```
+### Folder and file breakdown
+Lets look at what this files and folders could help us accomplish and their usefulness.
+| Directory | File | Description |
+|-----------|------|-------------|
+| Documentation | GetUser.md | Providers a documentation for the GetUser service, and can be called if **x-meta-doc** is added to the request header |
+| Documentation | PostUser.md | Providers a documentation for the PostUser service, and can be called if **x-meta-doc** is added to the request header |
+| Model | ... | Contains all our model classes for our routes and can be generated from the CLI or Terminal |
+| Providers | CreateProvider.php | Contains all route methods that triggers a create transaction and are typically just routes that are added from the terminal if structured this way **"php assist fatapi make:route {service}/create-{routeName}"**|
+| Providers | UpdateProvider.php | Contains all route methods that triggers an update transaction and are typically just routes that are added from the terminal if structured this way **"php assist fatapi make:route {service}/update-{routeName}"**|
+| Providers | DeleteProvider.php | Contains all route methods that triggers a delete transaction and are typically just routes that are added from the terminal if structured this way **"php assist fatapi make:route {service}/delete-{routeName}"**|
+| ... | PostUser.php | Our main handler for every post requests sent to this User service |
+| ... | GetUser.php | Our main handler for every get requests sent to this User service |
+
+# How to create a new route
+Creating a route requires that you must have already generated a service and that the route does not exists for that service. A route would be a trigger to complete a transaction and they typically would take the request data sent, provide some inner workings that makes meaning to the data, and then send a response back through json or xml. Every service must have at least one or more route to be successful and below we would show you a basic command to generate one;
+```php
+php assist fatapi make:route {service}/{route} -{option}
+```
+Where **{option}** can either be **(post or get)**. So why {option}? They help be direct to where you what that route to be added. Remember we have two main request files called **PostUser.php** and **GetUser.php** using a User service as an example. 
+
+Where **{service}** is a valid service name that exists in your **app/Resource/{version}** folder.
+
+Where **{route}** is a valid method that does not exists in the method eg. submit-profile, etc.
+
+## Create a route with a version number
+You simply need to add a version number after the route name as seen below;
+```php
+php assist fatapi make:route {service}/{route}:{version} -{option}
+```
+Where **{version}** can be v1, v2, etc. 
+
+## Create a route without an option
+You can also benefit from some naming standard we've designed so that you stay consistent with your route names. This implies that you no longer need to add **-post** or **-get** when creating a route. The table below shows just how, and we would demostrate with a service called **User**;
+
+| Keyword | Example | In Action | Description |
+|---------|----------------|---------|-------------|
+| get | **get**-users | *make:route user/get-users* or | This command creates a **GetUsers** route method in the **GetUser.php** file |
+| submit | **submit**-record | *make:route user/submit-record* | This command creates a **SubmitRecord** route method in the **PostUser.php** file |
+| create | **create**-user | *make:route user/create-user* | This command creates a **CreateUser** route method in the **Providers/CreateProvider.php** file |
+| update | **update**-user | *make:route user/update-user* | This command creates a **UpdateUser** route method in the **Providers/UpdateProvider.php** file |
+| delete | **delete**-user | *make:route user/delete-user* | This command creates a **DeleteUser** route method in the **Providers/DeleteProvider.php** file |
 
 # Resource configuration style
 Here you can instead generate a config.json file and transfer request to an external service using a general style or separate channel with different request method.

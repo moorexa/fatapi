@@ -10,6 +10,7 @@ use Classes\Cli\Assist;
 define('MAKE_RESOURCE', 'make');
 define('MAKE_EXTERNAL', 'make:ext');
 define('MAKE_MODEL', 'make:model');
+define('MAKE_ROUTE', 'make:route');
 define('MAKE_MIDDLEWARE', 'make:ware');
 define('MAKE_DOCUMENTATION', 'make:doc');
 define('MAKE_CONNECTION', 'make:dbms');
@@ -207,6 +208,150 @@ if (count($arguments) > 0 && isset($arguments[ACTION])) :
 
             // created
             Assist::out($path . ' created successfully!', $assist->ansii('green'));
+        break;
+
+        // create route
+        case MAKE_ROUTE:
+
+            // split action to controller and model name
+            $actionArray = explode('/', $action);
+
+            if (count($actionArray) != 2) return Assist::out('Could not proceed with request. You failed to format the action like this "RESOURCE/ROUTE"', $assist->ansii('red'));
+
+            // create service
+            $service = formatName($actionArray[0]);
+
+            // build path
+            $path = HOME . 'app/Resources/' . $service . '/' . $version;
+            
+            // check if version exists
+            if (!is_dir($path)) return Assist::out('This resource "'.$path.'" does not exists!', $assist->ansii('red'));
+
+            // Get route
+            $route = formatName($actionArray[1]);
+
+            // get last param
+            $last = end($arguments);
+
+            // post or get
+            if ($last == '-post' || $last == '-get') :
+
+                // is post
+                if ($last == '-post') :
+
+                    // use post service
+                    $path .= '/Post'.$service.'.php';
+                
+                else:
+
+                    // use get service
+                    $path .= '/Get'.$service.'.php';
+
+                endif;
+
+            else :
+
+                // check for create, update, and delete
+                if (stripos($route, 'create') === 0) :
+
+                    // use create provider
+                    $path .= '/Providers/CreateProvider.php';
+
+                elseif (stripos($route, 'update') === 0) :
+
+                    // use update provider
+                    $path .= '/Providers/UpdateProvider.php';
+
+                elseif (stripos($route, 'delete') === 0) :
+
+                    // use delete provider
+                    $path .= '/Providers/DeleteProvider.php';
+
+                else:
+
+                    // try be specific
+                    if (stripos($route, 'get') === 0 || stripos($route, 'fetch') === 0) :
+
+                        // use get service
+                        $path .= '/Get'.formatName($actionArray[0]).'.php';
+
+                    elseif (stripos($route, 'submit') === 0):
+
+                        // use post service
+                        $path .= '/Post'.formatName($actionArray[0]).'.php';
+
+                    endif;
+
+                endif;
+
+            endif;
+
+            // have a file
+            if (!is_file($path)) return Assist::out('Could not proceed with request. We could not load a destination. Try adding -post or -end at the end of the command', $assist->ansii('red'));
+
+            // include file
+            include_once $path;
+
+            // get class name
+            $basename = basename($path);
+
+            // remove extension
+            $className = substr($basename, 0, strpos($basename, '.'));
+
+            // load content
+            $content = file_get_contents($path);
+
+            // get namespace
+            $namespace = '';
+            
+            // check now
+            if (strpos($content, 'namespace')) :
+
+                // start here
+                $namespace = substr($content, strpos($content, 'namespace'));
+
+                // end here
+                $namespace = substr($namespace, 0, strpos($namespace, ';'));
+
+                // replace namespace
+                $namespace = trim(str_replace('namespace', '', $namespace));
+
+            endif;
+
+            // add namespace to class
+            $classNamespace = ($namespace != '') ? $namespace . '\\' . $className : $className;
+
+            // check if class exists
+            if (!class_exists($classNamespace)) return Assist::out('Could not proceed with request. We could not load class "'.$classNamespace.'".', $assist->ansii('red'));
+
+            // create instance
+            $instance = new $classNamespace;
+
+            // check if method exists
+            if (method_exists($instance, $route)) return Assist::out('Could not proceed with request. Route "'.$route.'" already exists in "'.$classNamespace.'"', $assist->ansii('red'));
+
+            // get template
+            $template = file_get_contents(__DIR__ . '/route-template.txt');
+
+            // replace method name
+            $template = str_replace('{METHOD}', $route, $template);
+            $template = str_replace('{CLASS}', $className, $template);
+
+            // get the last brace
+            $lastBracePosition = strrpos($content, '}');
+
+            // extract content
+            $content = substr($content, 0, $lastBracePosition);
+
+            // add template data
+            $content .= "\n" . $template . "\n}";
+            
+            // update dbms file
+            file_put_contents($path, $content);
+
+            // all good
+            Assist::out('Route method "'.$route.'" added to "'.$path.'" successfully!', $assist->ansii('green'));
+            
         break;
 
         // create middleware
