@@ -3,6 +3,7 @@ namespace Resources\{SERVICE}\{VERSION}\Model;
 
 use Engine\RequestData;
 use Engine\{Interfaces\ModelInterface, DBMS, Table, ModelHelper};
+use Lightroom\Database\Interfaces\QueryBuilderInterface as QueryBuilder;
 /**
  * @package {MODEL} Model
  * @author Amadi Ifeanyi <amadiify.com>
@@ -104,6 +105,19 @@ class {MODEL} implements ModelInterface
      * This reads an entry from the database
      */
     public function Read()
+    {
+
+    }
+
+    /**
+     * @method ModelInterface Filter
+     * @param QueryBuilder $builder
+     * @return QueryBuilder
+     * 
+     * This method would help us include filters into our queries,
+     * You just need to pass your builder query into this function before adding ->go(); 
+     */
+    public function Filter(QueryBuilder $builder) : QueryBuilder
     {
 
     }

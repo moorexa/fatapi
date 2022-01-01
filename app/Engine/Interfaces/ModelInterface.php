@@ -2,6 +2,7 @@
 namespace Engine\Interfaces;
 
 use Engine\RequestData;
+use Lightroom\Database\Interfaces\QueryBuilderInterface as QueryBuilder;
 /**
  * @package Model Interface
  * @author Amadi Ifeanyi <amadiify.com>
@@ -55,4 +56,14 @@ interface ModelInterface
      * This reads an entry from the database
      */
     public function Read();
+
+    /**
+     * @method ModelInterface Filter
+     * @param QueryBuilder $builder
+     * @return QueryBuilder
+     * 
+     * This method would help us include filters into our queries,
+     * You just need to pass your builder query into this function before adding ->go(); 
+     */
+    public function Filter(QueryBuilder $builder) : QueryBuilder;
 }
