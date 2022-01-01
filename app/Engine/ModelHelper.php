@@ -112,7 +112,9 @@ trait ModelHelper
         ->get(is_array($columnData) ? implode(',', $columnData) : '*')
 
         // add where statement
-        ->where($whereData)
+        ->if(count($whereData) > 0, function($builder) use ($whereData){
+            $builder->where($whereData);
+        })
 
         // add sorting
         ->if($getQuery->has('sort'), function($builder) use (&$option){
