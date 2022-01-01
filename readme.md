@@ -112,6 +112,92 @@ You can also benefit from some naming standard we've designed so that you stay c
 | update | **update**-user | *make:route user/update-user* | This command creates a **UpdateUser** route method in the **Providers/UpdateProvider.php** file |
 | delete | **delete**-user | *make:route user/delete-user* | This command creates a **DeleteUser** route method in the **Providers/DeleteProvider.php** file |
 
+# How to make a simple POST request
+To demostrate this, we would be using **nodejs** and the **axios** library. Take note of **/api**, that's our single point of entry.
+```js
+var axios = require('axios');
+var FormData = require('form-data');
+var data = new FormData();
+
+var config = {
+  method: 'post',
+  url: 'http://someendpoint.com/api',
+  headers: { 
+    'x-meta-service': 'user', 
+    'x-meta-method': 'login', 
+    ...data.getHeaders()
+  },
+  data : data
+};
+
+axios(config)
+.then(function (response) {
+  console.log(JSON.stringify(response.data));
+})
+.catch(function (error) {
+  console.log(error);
+});
+
+```
+To obtain more information of what's required to send a request to the server, make this simple request to obtain help. 
+```js
+var axios = require('axios');
+
+var config = {
+  method: 'post',
+  url: 'http://someendpoint.com/help',
+};
+
+axios(config)
+.then(function (response) {
+  console.log(response.data);
+})
+.catch(function (error) {
+  console.log(error);
+});
+```
+or just sent a POST request to that url to learn more. 
+
+# How to make a simple GET request
+To demostrate this, we would be using **nodejs** and the **axios** library. Take note of **/api**, that's our single point of entry.
+```js
+var axios = require('axios');
+
+var config = {
+  method: 'get',
+  url: 'http://someendpoint.com/api',
+  headers: { 
+    'x-meta-service': 'account', 
+  }
+};
+
+axios(config)
+.then(function (response) {
+  console.log(JSON.stringify(response.data));
+})
+.catch(function (error) {
+  console.log(error);
+});
+```
+To obtain more information of what's required to send a request to the server, make this simple request to obtain help. 
+```js
+var axios = require('axios');
+
+var config = {
+  method: 'get',
+  url: 'http://someendpoint.com/help',
+};
+
+axios(config)
+.then(function (response) {
+  console.log(response.data);
+})
+.catch(function (error) {
+  console.log(error);
+});
+```
+or just sent a GET request from your browser to that url to learn more.
+
 # Resource configuration style
 Here you can instead generate a config.json file and transfer request to an external service using a general style or separate channel with different request method.
 
