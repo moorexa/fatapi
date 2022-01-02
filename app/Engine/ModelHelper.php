@@ -281,7 +281,10 @@ trait ModelHelper
 
                 // set the ID
                 $instance->{$propertyId} = $data[0];
-                return $instance->Read();
+                $resultArray = $instance->Read();
+
+                // has record
+                return isset($resultArray[0]) ? $resultArray[0] : [];
 
             // delete by id
             case 'DELETEBYID':
