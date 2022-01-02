@@ -239,12 +239,13 @@ trait ModelHelper
 
     /**
      * @method ModelHelper cleanUpNullData
-     * @return object
+     * @param array $data
+     * @return object|array
      */
-    public function cleanUpNullData() : object
+    public function cleanUpNullData(array $data = [])
     {   
         // load all properties
-        $properties = json_decode(json_encode($this));
+        $properties = json_decode(json_encode((count($data) > 0 ? $data : $this)));
 
         // now we create an empty array
         $notNullData = [];
@@ -253,7 +254,7 @@ trait ModelHelper
         foreach ($properties as $key => $value) if ($value != null) $notNullData[$key] = $value;
 
         // return object
-        return (object) $notNullData;
+        return count($data) > 0 ? $notNullData : (object) $notNullData;
     }   
 
     /**
