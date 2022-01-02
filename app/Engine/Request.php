@@ -321,6 +321,19 @@ class Request implements Interfaces\RequestInterface
     }
 
     /**
+     * @method Request __set
+     * @param string $name
+     * @param mixed $data
+     * @return void
+     * 
+     * This would update or create a new entry in our request data array
+     */
+    public function __set(string $name, $data)
+    {
+        $this->requestData[$name] = $data;
+    }
+
+    /**
      * @method RequestInterface useModel
      * @param string $model
      * @return ModelInterface
