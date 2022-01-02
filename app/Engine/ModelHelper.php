@@ -255,7 +255,29 @@ trait ModelHelper
 
         // return object
         return count($data) > 0 ? $notNullData : (object) $notNullData;
-    }   
+    }
+
+    /**
+     * @method ModelHelper isFreshData
+     * @param array $data 
+     * @param QueryBuilder $builder
+     * @return bool
+     * 
+     * This method would help check if data values does not exists in the table
+     */
+    public function isFreshData(array $data, QueryBuilder $builder) : bool 
+    {
+        /**
+         * @var bool $status
+         */
+        $status = false;
+
+        // check and update status
+        if ($builder->get()->where($data)->go()->rowCount() == 0) $status = true;
+
+        // return boolean
+        return $status;
+    }
 
     /**
      * @method ModelHelper __callStatic
