@@ -233,7 +233,8 @@ class Request implements Interfaces\RequestInterface
                             if (!$filterBody->isOk()) return app('screen')->render([
                                 'Status'    => false,
                                 'Message'   => 'You have failed to send the right request body for this resource "'.$filter->service.'.'.$filter->method.'". Please see what request body to send below',
-                                'Body'      => $data->body
+                                'Body'      => $data->body,
+                                'Errors'     => $filterBody->getErrors()
                             ]);
 
                             // set schema
