@@ -672,4 +672,5 @@ ExampleService is just a placeholder and can be your service name eg (student, u
 2. ?column=* or name,age etc
 3. ?limit=4 or more
 4. ?sortby=column|asc or desc
-5. 
+5. ?rowid={0-9 or string} 
+6. ?search=column|data

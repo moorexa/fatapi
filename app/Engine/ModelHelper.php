@@ -84,6 +84,14 @@ trait ModelHelper
 
         endif;
 
+        // has rowid
+        if ($getQuery->has('rowid') && isset($option['primary']) && $option['primary'] != '') :
+
+            // add to where data
+            $whereData[$option['primary']] = $getQuery->rowid;
+
+        endif;
+
         // has column
         if ($getQuery->has('column')) $columnData = $getQuery->column;
 
@@ -107,18 +115,109 @@ trait ModelHelper
 
         endif;
 
+        // has where
+        $hasWhere = count($whereData) > 0 ? true : false;
+
         // return builder
         return $builder
         ->get(is_array($columnData) ? implode(',', $columnData) : '*')
 
         // add where statement
-        ->if(count($whereData) > 0, function($builder) use ($whereData){
+        ->if($hasWhere, function($builder) use ($whereData){
             $builder->where($whereData);
         })
 
+        // add search
+        ->if($getQuery->has('search'), function($builder) use (&$option, $hasWhere){
+
+            // split comma
+            $searchArray = explode(',', get()->search);
+
+            // build data
+            $data = ['key' => [], 'statement' => '', 'value' => []];
+
+            // loop through
+            foreach ($searchArray as $index => $search) :
+
+                // split pipe
+                $searchPipe = explode('|', $search);
+
+                // are we good ?
+                if (count($searchPipe) == 2 && isset($option['allowedColumns'])) :
+
+                    // flip key
+                    $keyFlipped = array_flip($data['key']);
+
+                    // columnn exists
+                    if (isset($option['allowedColumns'][$searchPipe[0]])) :
+
+                        // get column
+                        $column = $option['allowedColumns'][$searchPipe[0]];
+
+                        // get placeholder
+                        $placeholder = "'%{$searchPipe[1]}%'";
+
+                        // add key
+                        if (isset($keyFlipped[$searchPipe[0]])) :
+
+                            // add statement
+                            $data['statement'] .= ' or ' . $column . ' like '.$placeholder.' ';
+
+                        else:
+
+                            // add statement
+                            $data['statement'] .= ($data['statement'] != '' ? ' and ' : '') . $column . ' like '.$placeholder.' ';
+
+                        endif;
+
+                        // add key
+                        $data['key'][] = $searchPipe[0];
+
+                    endif;
+
+                endif;
+
+            endforeach;
+
+            // has statement
+            if ($data['statement'] != '') : 
+                
+                // add like statement
+                if (!$hasWhere) $builder->replace('{where}', 'WHERE (' .$data['statement']. ') ');
+
+                // has where
+                if ($hasWhere) $builder->replace('WHERE', 'WHERE (' .$data['statement'] . ') and ');
+
+            endif;
+        })
         // add sorting
         ->if($getQuery->has('sort'), function($builder) use (&$option){
             if (isset($option['primary'])) $builder->orderBy($option['primary'], get()->sort);
+        })
+
+        // add sorting with a specific format
+        ->if($getQuery->has('sortby') && !$getQuery->has('sort'), function($builder) use (&$option){
+            
+            // split pipe
+            $sortBy = explode('|', get()->sortby);
+
+            // check length
+            if (count($sortBy) == 2) :
+
+                // get the column and style
+                list($column, $format) = $sortBy;
+
+                // do we have column in "allowedColumns" ?
+                if (isset($option['allowedColumns']) && isset($option['allowedColumns'][$column])) :
+
+                    // load sorting now
+                    $builder->orderBy($option['allowedColumns'][$column], $format);
+
+                endif;
+
+            endif;
+
+             
         })
 
         // add page limit
