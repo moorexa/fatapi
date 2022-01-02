@@ -121,13 +121,10 @@ class {MODEL} implements ModelInterface
        // can we can update data
        if ($table->update($data)->where([static::PRIMARY_KEY => $ID])->go()) $updated = true;
 
-       // let's set the id
-       get()->set('rowid', $ID);
-
        // return array data
        return [
            'updated'    => $updated,
-           'data'       => $this->Read()
+           'data'       => self::ReadByID($ID) // This a special method and would call Read() method
        ];
     }
 
@@ -174,7 +171,10 @@ class {MODEL} implements ModelInterface
             // default where statement to send alongside this query
             'where' => [
 
-            ], 
+            ],
+
+            // when there is an ID and not zero (0), it fetches for that ID only
+            'id' => $this->id, 
 
             // set what column to fetch 
             'column' => '*',

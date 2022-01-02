@@ -84,11 +84,22 @@ trait ModelHelper
 
         endif;
 
-        // has rowid
-        if ($getQuery->has('rowid') && isset($option['primary']) && $option['primary'] != '') :
+        // has primary key
+        if (isset($option['primary']) && $option['primary'] != '') :
 
-            // add to where data
-            $whereData[$option['primary']] = $getQuery->rowid;
+            // check for id
+            if (isset($option['id']) && intval($option['id']) != 0) :
+
+                // use id
+                $whereData[$option['primary']] = $option['id'];
+
+            // has rowid
+            elseif ($getQuery->has('rowid')):
+
+                // add to where data
+                $whereData[$option['primary']] = $getQuery->rowid;
+
+            endif;
 
         endif;
 
@@ -244,4 +255,68 @@ trait ModelHelper
         // return object
         return (object) $notNullData;
     }   
+
+    /**
+     * @method ModelHelper __callStatic
+     * @param string $method
+     * @param array $data
+     * @return ModelInterface|mixed
+     */
+    public static function __callStatic(string $method, array $data)
+    {
+        // get class name
+        $className = static::class;
+
+        // create instance
+        $instance = new $className;
+
+        // get property for id
+        $propertyId = property_exists($instance, 'ID') ? 'ID' : 'id';
+
+        // check method
+        switch (strtoupper($method)) :
+            
+            // read by id
+            case 'READBYID':
+
+                // set the ID
+                $instance->{$propertyId} = $data[0];
+                return $instance->Read();
+
+            // delete by id
+            case 'DELETEBYID':
+
+                // set the ID
+                $instance->{$propertyId} = $data[0];
+                return $instance->Delete();
+
+            // update by id
+            case 'UPDATEBYID':
+
+                // set the ID
+                $instance->{$propertyId} = $data[0];
+
+                // Load request data
+                $requestData = new RequestData($data[1]);
+
+                // Load fillable
+                $instance->Fillable($requestData);
+
+                // call update method
+                return $instance->Update();
+
+            // create with data
+            case 'CREATEWITHDATA':
+
+                // Load request data
+                $requestData = new RequestData($data[0]);
+                
+                // Load fillable
+                $instance->Fillable($requestData);
+
+                // call update method
+                return $instance->Create();
+
+        endswitch;
+    }
 }

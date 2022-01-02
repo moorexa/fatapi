@@ -668,9 +668,22 @@ ExampleService is just a placeholder and can be your service name eg (student, u
 ```
 
 # Default Query Filter for Get Requests
+A great API is not complete without search and filters, this we know and here we've built more than one option to manage what to recieve without writing additional code. Here are some of the GET queries you can add to your URL.
+
 1. ?sort=asc or desc
 2. ?column=* or name,age etc
 3. ?limit=4 or more
 4. ?sortby=column|asc or desc
 5. ?rowid={0-9 or string} 
 6. ?search=column|data
+
+# Model Special methods
+Here is a complete list of our model magic methods that can be used in an external file for CRUD operations;
+| Method | Translate To | Parameter | Example |
+|--------|--------------|-----------|---------|
+| ReadByID | Read() | {integer} | Resources\ModelClass::ReadByID(9) |
+| DeleteByID | Delete() | {integer} | Resources\ModelClass::DeleteByID(9) |
+| UpdateByID | Update() | {integer, array} | Resources\ModelClass::UpdateByID(9, [...]) |
+| CreateWithData | Create() | {array} | Resources\ModelClass::CreateWithData([...]) |
+
+There you go, have fun building great stuffs with it.
