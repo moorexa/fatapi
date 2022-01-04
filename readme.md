@@ -17,6 +17,17 @@ Crafted for PHP developers. It's great for personal, enterprise, and commercial 
 1. PHP 7 and above
 2. Knowledge of PHP and a bit of Moorexa Framework
 
+# Installation
+You need to have composer installed globally or run the command from your CLI or Terminal after downloading a copy of this project;
+```php
+php assist install composer
+```
+If this successfully installs composer for your new project then you can run the next command or visit [https://getcomposer.org/download/] to download composer. 
+```php
+php composer update
+```
+Running this after installing composer would implicitly run the install command. This will download the dependencies' files into the vendor directory in your project. (The vendor directory is the conventional location for all third-party code in a project)
+
 # Introduction
 So why FATAPI? Building backend applications for years led us to this one stop solution. Over the years we've built REST API's with the following request methods **GET, POST, DELETE, PUT** and we've also had to worry about versioning, building light then scalling to micro services, managing multiple endpoints that are procedural, creating standards for our requests and responses even when contracting some part of our backend application to remote developers, making documentation accessible via a special link eg. mydomain.com/api/doc. Yeah, creating this takes so much time, and many startups, developer, or software agency would worry less if they had a foundational system like this that allows connectivity to external services, creating small programs that can be decoupled into services when the business scales, building strict entities that is consitent across versions, version control services and methods, reduce cost to manage multiple endpoints and use only **GET** and **POST** request methods with a meta data to fetch and update services. The list can go on and on, but that's where FATAPI comes in. With it, you can build backend applications that allows for all this possiblities and more.
 
@@ -685,5 +696,146 @@ Here is a complete list of our model magic methods that can be used in an extern
 | DeleteByID | Delete() | {integer} | Resources\ModelClass::DeleteByID(9) |
 | UpdateByID | Update() | {integer, array} | Resources\ModelClass::UpdateByID(9, [...]) |
 | CreateWithData | Create() | {array} | Resources\ModelClass::CreateWithData([...]) |
+
+# Sending Transactional and Business Emails
+Out of the box, you can now send emails using the **symfony/mailer** package. We've extended this library to simplify it use cases starting from configuration down to sending mails with attachments and more. For more information on this package please visit [https://symfony.com/doc/current/mailer.html]
+
+Having that out of the way, let's begin with the configuration. Open the file **app/Messaging/Emails/config.php** to make your configuration. 
+```php
+/**
+ * Configuration for sending out emails
+ */
+return [
+    'default' => 'Messaging\Emails\Handlers\SymfonyMailer',
+    'dsn' => 'smtp://{user}:{pass}@{host}:{port}',
+    'host' => 'smtp.mailtrap.io',
+    'port' => 2525,
+    'user' => '',
+    'pass' => ''
+];
+```
+Our default handler for the SymfonyMailer package is **Messaging\Emails\Handlers\SymfonyMailer::class** and you can change it if you feel like.
+
+## Next, creating dynamic methods and linking them to a template file
+You've got it already, from the **app/Messaging/Emails/email-list.json** file you can just add dynamic methods that would represent one or more template files. See an example below;
+```json
+{
+    "sendWelcomeMessage" : {
+        "category" : "LoadBusinessTemplate",
+        "template" : "welcome",
+        "subject" : "Welcome to my application",
+        "from" : "",
+        "entities" : {
+            "name" : "required|string|notag"
+        }
+    }
+}
+```
+The template "welcome" represents a template file that must have been created in **app/Messaging/Emails/Templates/Business/** directory as **welcome.html** and may contain one or more placeholders to mask actual data. You can also see the category. So far we have two categories and i'll take you where their template files lives;
+
+| Category | Directory |
+|----------|-----------|
+| LoadBusinessTemplate | *app/Messaging/Emails/Templates/Business/* |
+| LoadTransactionalTemplate | *app/Messaging/Emails/Templates/Transactional/* |
+
+You are free to create more categories with additional methods that points to where a template can be fetched when called by the category name in **app/Messaging/Emails/EmailTemplate.php**.
+
+"entities" tells what to expect from the developer. These fields can contain default data as seen below:
+```json
+    "entities" : {
+        "name" : ["required|string|notag", "default name"]
+    }
+```
+The rest is self explanatory. Now, we can send a mail to any email address from anywhere in our application. See example below
+
+```php
+use Messaging\Emails\EmailSender;
+
+// send welcome message
+EmailSender::sendWelcomeMessage(
+    // data to replace placeholders with 
+    [
+        'name' => 'fatapi' // this would replace {name} with fatapi
+    ],
+
+    // extra option
+    [
+        'background' => true, // this would send the mail in the background
+        'subject' => '', // (optional) but can help change the mail subject
+        'from' => '', // (optional) but can help change the mail sender
+        'to' => 'someone@example.com' // this is the receiver email address 
+    ],
+
+    // (optional callback)
+    function($email)
+    {
+        // now you have the Symfony\Component\Mime\Email in $email to work with
+        // let try attaching a file
+        $email->attach(fopen('/path/to/documents/contract.doc', 'r'));
+    }
+);
+```
+# Sending Background Emails
+Out of the box you can use the rabbitmq server and client for this. Moorexa already made this easy. Just ensure that you have your **rabbitmq-server** running and then you can run the following command on your cli to start the client listener;
+```php
+php assist start-rabbitmq-worker
+```
+Now you can now send background processes like emails, image processing and more. See Doc guide: https://rabbitmq.com/documentation.html for **rabbitmq-server**
+
+# Sending Email Alerts
+We've created a class called **Messaging\EmailAlerts::class** that houses all alerts to your server once a transaction is completed. A transaction can either be;
+1. New customer order
+2. New sign up
+3. Failed purchase
+etc.
+
+These alerts can be added in the **Messaging\EmailAlerts** class in **app/Messaging/EmailAlerts.php** and called from that namespace when the need arises. See an example below
+
+```php
+<?php
+namespace Messaging;
+
+use Messaging\Emails\EmailSender;
+/**
+ * @package EmailAlerts
+ * @author Amadi Ifeanyi <amadiify.com>
+ * 
+ * This alert is meant for internal email notifications
+ */
+class EmailAlerts
+{
+    /**
+     * @var string $sendTo
+     */
+    public static $sendTo = 'alerts@yourdomain.com'; // destination address
+
+    /**
+     * @var bool $sendInBackground
+     * 
+     * To get the email to send in the background, ensure rabbitmq is running and rabbitmq client is running
+     */
+    public static $sendInBackground = true;
+
+    /**
+     * @method EmailAlerts newSubscriberAlert
+     * @param array $data
+     * @return void
+     */
+    public static function newSubscriberAlert(array $data = [])
+    {
+        EmailSender::newSubscriberAlert($data, [
+            'background'    => self::$sendInBackground,
+            'to'            => self::$sendTo,
+            'subject'       => 'You have a new email subscriber'
+        ]);
+    }
+}
+
+// now we can just call
+EmailAlerts::newSubscriberAlert();
+
+```
+Remember, all alerts must have a template file saved in **app/Messaging/Emails/Templates/Business/** for business and **app/Messaging/Emails/Templates/Transactional** for transactional mails like "login, confirm password" etc.
+
 
 There you go, have fun building great stuffs with it.

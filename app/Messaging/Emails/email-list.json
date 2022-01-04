@@ -1,0 +1,48 @@
+{
+    "sendWelcomeMessage" : {
+        "category" : "LoadBusinessTemplate",
+        "template" : "welcome",
+        "subject" : "Welcome to my application",
+        "from" : "",
+        "entities" : {
+            "name" : "required|string|notag"
+        }
+    },
+
+    "newSubscriber" : {
+        "category" : "LoadBusinessTemplate",
+        "template" : "new-subscriber",
+        "from" : "noreply@autofixer.com.ng",
+        "subject" : "",
+        "entities" : {
+            "name" : "required|string|notag"
+        }
+    },
+
+    "newRequest" : {
+        "category" : "LoadBusinessTemplate",
+        "template" : "service-request",
+        "from" : "",
+        "subject" : "Thank you for your service request",
+        "entities" : {
+            "name" : "required|string|notag"
+        }
+    },
+
+    "newSubscriberAlert" : {
+        "category" : "LoadBusinessTemplate",
+        "template" : "new-subscriber-alert",
+        "from" : "",
+        "entities" : {
+        }
+    },
+
+    "newContactAlert" : {
+        "category" : "LoadBusinessTemplate",
+        "template" : "new-contact-alert",
+        "from" : "",
+        "entities" : {
+            "name" : "required|string|notag"
+        }
+    }
+}

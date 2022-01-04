@@ -1,6 +1,8 @@
 <?php
 namespace Resources\{SERVICE}\{VERSION};
 
+use Messaging\EmailAlerts;
+use Messaging\Emails\EmailSender;
 use Engine\{Interfaces\ResourceInterface, Request, Response};
 /**
  * @package Post{SERVICE}

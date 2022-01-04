@@ -2,6 +2,8 @@
 namespace Resources\{SERVICE}\{VERSION}\Model;
 
 use Engine\RequestData;
+use Messaging\EmailAlerts;
+use Messaging\Emails\EmailSender;
 use function Lightroom\Requests\Functions\{get};
 use Engine\{Interfaces\ModelInterface, DBMS, Table, ModelHelper};
 /**

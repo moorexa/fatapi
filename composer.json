@@ -32,6 +32,7 @@
         "guzzlehttp/guzzle": "^7.4",
         "ext-pcntl": "*",
         "cboden/ratchet": "^0.4.3",
-        "workerman/phpsocket.io": "^1.1"
+        "workerman/phpsocket.io": "^1.1",
+        "symfony/mailer": "^5.4"
     }
 }
