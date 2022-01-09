@@ -314,7 +314,7 @@ trait ModelHelper
                     $resultArray = $instance->Read();
 
                     // has record
-                    return isset($resultArray[0]) ? $resultArray[0] : [];
+                    return isset($resultArray[0]) ? $resultArray[0] : $instance;
 
                 endif;
 
