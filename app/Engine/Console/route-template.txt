@@ -2,14 +2,14 @@
      * @method {CLASS} {METHOD}
      * @param Request $request
      * @param Response $response
-     * @return void
+     * @return mixed
      * 
      * @start.doc
      * 
      * .. Your documentation content goes in here.
      * 
      */
-    public function {METHOD}(Request $request, Response $response) : void
+    public function {METHOD}(Request $request, Response $response)
     {
         $response->success('It works!');
     }
