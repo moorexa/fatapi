@@ -296,6 +296,9 @@ trait ModelHelper
         // get property for id
         $propertyId = property_exists($instance, 'ID') ? 'ID' : 'id';
 
+        // set the default zero message
+        $zeroMessage = 'We encountered zero value. Add x-meta-id to your header or id to your post body';
+
         // check method
         switch (strtoupper($method)) :
             
@@ -303,33 +306,73 @@ trait ModelHelper
             case 'READBYID':
 
                 // set the ID
-                $instance->{$propertyId} = $data[0];
-                $resultArray = $instance->Read();
+                $instance->{$propertyId} = intval($data[0]);
 
-                // has record
-                return isset($resultArray[0]) ? $resultArray[0] : [];
+                // not zero
+                if ($instance->{$propertyId} != 0) :
+
+                    $resultArray = $instance->Read();
+
+                    // has record
+                    return isset($resultArray[0]) ? $resultArray[0] : [];
+
+                endif;
+
+                // failed
+                app('screen')->render([
+                    'Status'    => false,
+                    'Message'   => $zeroMessage 
+                ]);
+
+                // zero data
+                die;
 
             // delete by id
             case 'DELETEBYID':
 
                 // set the ID
-                $instance->{$propertyId} = $data[0];
-                return $instance->Delete();
+                $instance->{$propertyId} = intval($data[0]);
+
+                // not zero
+                if ($instance->{$propertyId} != 0) return $instance->Delete();
+
+                // failed
+                app('screen')->render([
+                    'Status'    => false,
+                    'Message'   => $zeroMessage
+                ]);
+
+                // zero data
+                die;
 
             // update by id
             case 'UPDATEBYID':
 
                 // set the ID
-                $instance->{$propertyId} = $data[0];
+                $instance->{$propertyId} = intval($data[0]);
 
-                // Load request data
-                $requestData = new RequestData($data[1]);
+                // not zero
+                if ($instance->{$propertyId} != 0) :
 
-                // Load fillable
-                $instance->Fillable($requestData);
+                    // Load request data
+                    $requestData = new RequestData($data[1]);
 
-                // call update method
-                return $instance->Update();
+                    // Load fillable
+                    $instance->Fillable($requestData);
+
+                    // call update method
+                    return $instance->Update();
+
+                endif;
+
+                // failed
+                app('screen')->render([
+                    'Status'    => false,
+                    'Message'   => $zeroMessage
+                ]);
+
+                // zero data
+                die;
 
             // create with data
             case 'CREATEWITHDATA':
