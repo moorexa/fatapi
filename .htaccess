@@ -37,24 +37,18 @@ DefaultLanguage en
 
 # it gets fast and safe here.
 <IfModule mod_headers.c>
-  <FilesMatch ".(js|css|xml|gz|html|php|mp4|m4v|ttf|otf|mp3|svg)$">
-    Header append Vary: Accept-Encoding
-  </FilesMatch>
-
-  <filesMatch ".(jpg|jpeg|png|gif|ico|mp4|m4v|mp3|svg)$">
-    Header set Cache-Control "max-age=2592000, public"
-  </filesMatch>
-
-  <FilesMatch ".(js|css|ttf|otf)$">
-		Header set Cache-Control "no-cache, no-store, must-revalidate"
-		Header set Pragma "no-cache"
-		Header set Expires 0
-  </FilesMatch>
 
   <FilesMatch "(assist|composer.json|composer.lock|composer|config.xml)">
 	  Deny from all
   </FilesMatch>
 
+</IfModule>
+
+<IfModule mod_headers.c>
+    Header set Access-Control-Allow-Methods "*"
+    Header set Access-Control-Allow-Origin "*"
+    Header set Vary "Origin"
+    Header set Access-Control-Allow-Headers "x-meta-service, x-meta-method, x-meta-id"
 </IfModule>
 
 RewriteCond %{REQUEST_FILENAME} !-d

@@ -18,15 +18,11 @@ Crafted for PHP developers. It's great for personal, enterprise, and commercial 
 2. Knowledge of PHP and a bit of Moorexa Framework
 
 # Installation
-You need to have composer installed globally or run the command from your CLI or Terminal after downloading a copy of this project;
+It's way easy!!! Just download a copy of this project and run the following command from your CLI or Terminal
 ```php
-php assist install composer
+php fatapi install
 ```
-If this successfully installs composer for your new project then you can run the next command or visit [https://getcomposer.org/download/] to download composer. 
-```php
-php composer update
-```
-Running this after installing composer would implicitly run the install command. This will download the dependencies' files into the vendor directory in your project. (The vendor directory is the conventional location for all third-party code in a project)
+Running this command will install all you need, including local composer and all the required dependencies.
 
 # Introduction
 So why FATAPI? Building backend applications for years led us to this one stop solution. Over the years we've built REST API's with the following request methods **GET, POST, DELETE, PUT** and we've also had to worry about versioning, building light then scalling to micro services, managing multiple endpoints that are procedural, creating standards for our requests and responses even when contracting some part of our backend application to remote developers, making documentation accessible via a special link eg. mydomain.com/api/doc. Yeah, creating this takes so much time, and many startups, developer, or software agency would worry less if they had a foundational system like this that allows connectivity to external services, creating small programs that can be decoupled into services when the business scales, building strict entities that is consitent across versions, version control services and methods, reduce cost to manage multiple endpoints and use only **GET** and **POST** request methods with a meta data to fetch and update services. The list can go on and on, but that's where FATAPI comes in. With it, you can build backend applications that allows for all this possiblities and more.
@@ -43,27 +39,27 @@ Here are commands that can help you speed up development.
 
 | Command | Example | Description |
 |---------|----------|------------|
-| make | php assist fatapi make user | This creates a new service in **app/Resources/** |
-| make | php assist fatapi make user:v2 | This creates a new version for service user in **app/Resources/** |
-| make:ext | php assist fatapi make:ext user | This creates a new service that connects to an external url in  **app/Resources/** |
-| make:ext | php assist fatapi make:ext user:v2 | This creates a new version for an external service that connects to url in  **app/Resources/** |
-| make:ware | php assist fatapi make:ware myMiddleware | This create a middleware that can be attached to a service or request method in **app/Middlewares/** |
-| make:model | php assist fatapi make:model service/modelName | This create a new model for a particular service in **app/Resources/{service}/{version}/Model** |
-| make:model | php assist fatapi make:model service/modelName:v2 | This create a new model for a particular service in **app/Resources/{service}/{version}/Model** |
-| make:dbms | php assist fatapi make:dbms {connectionName} | This create a new connection method for your models in **app/Engine/DBMS.php** |
-| make:route | php assist fatapi make:route {service}/{routeName} | This create a new route method for a service in **app/Resources/{service}/{version}** |
+| make | php fatapi make user | This creates a new service in **src/Resources/** |
+| make | php fatapi make user:v2 | This creates a new version for service user in **src/Resources/** |
+| make:ext | php fatapi make:ext user | This creates a new service that connects to an external url in  **src/Resources/** |
+| make:ext | php fatapi make:ext user:v2 | This creates a new version for an external service that connects to url in  **src/Resources/** |
+| make:ware | php fatapi make:ware myMiddleware | This create a middleware that can be attached to a service or request method in **src/Middlewares/** |
+| make:model | php fatapi make:model service/modelName | This create a new model for a particular service in **src/Resources/{service}/{version}/Model** |
+| make:model | php fatapi make:model service/modelName:v2 | This create a new model for a particular service in **src/Resources/{service}/{version}/Model** |
+| make:dbms | php fatapi make:dbms {connectionName} | This create a new connection method for your models in **src/Engine/DBMS.php** |
+| make:route | php fatapi make:route {service}/{routeName} | This create a new route method for a service in **src/Resources/{service}/{version}** |
 
 # How to create a new service
 Services are like resources that contains one or more routes. They are packed with providers, models and some helpful classes and methods for building a functional and scalable systems.
 Here we demostrate how to use the command line to generate one.
 ```php
-php assist fatapi make {service}
+php fatapi make {service}
 ```
 where {service} can be a string without special characters execpt (_) and (-) eg. service-name, myservice, user, account, etc.
 
 By default, if you don't include a version to the command, it generates that service with the default version **v1**. But just incase you want a new version, just specify it as seen below
 ```php
-php assist fatapi make {service}:v2
+php fatapi make {service}:v2
 ```
 
 After creating a service called **User** for example on version **v1** you should see the following files and folders
@@ -97,18 +93,18 @@ Lets look at what this files and folders could help us accomplish and their usef
 # How to create a new route
 Creating a route requires that you must have already generated a service and that the route does not exists for that service. A route would be a trigger to complete a transaction and they typically would take the request data sent, provide some inner workings that makes meaning to the data, and then send a response back through json or xml. Every service must have at least one or more route to be successful and below we would show you a basic command to generate one;
 ```php
-php assist fatapi make:route {service}/{route} -{option}
+php fatapi make:route {service}/{route} -{option}
 ```
 Where **{option}** can either be **(post or get)**. So why {option}? They help be direct to where you what that route to be added. Remember we have two main request files called **PostUser.php** and **GetUser.php** using a User service as an example. 
 
-Where **{service}** is a valid service name that exists in your **app/Resource/{version}** folder.
+Where **{service}** is a valid service name that exists in your **src/Resource/{version}** folder.
 
 Where **{route}** is a valid method that does not exists in the method eg. submit-profile, etc.
 
 ## Create a route with a version number
 You simply need to add a version number after the route name as seen below;
 ```php
-php assist fatapi make:route {service}/{route}:{version} -{option}
+php fatapi make:route {service}/{route}:{version} -{option}
 ```
 Where **{version}** can be v1, v2, etc. 
 
@@ -250,15 +246,15 @@ composer require workerman/phpsocket.io
 ``` 
 installed or just run 
 ```php 
-php assist install socket
+php fatapi install socket
 ``` 
 from your cmd or terminal to install all dependencies for socket.io.
 
 Next, we start our socket server by running the following command
 ```php
-php assist socket
+php fatapi socket
 ```
-This would start workerman socket server with the address **ws://0.0.0.0:8082**. And you can change this default settings here **src/environment.yaml**
+This would start workerman socket server with the address **ws://0.0.0.0:8082**. And you can change this default settings here **framework/src/environment.yaml**
 
 ## Sending a socket.io request with Javascript
 To do this, you must have obtained socket.io cdn or installed socket.io client. Here, we would demostrate a complete proceedure to get you up to speed.
@@ -349,7 +345,7 @@ Here is a complete breakdown on the sample data sent to **meta.api**
 # How to use a model in a service
 Lets assume that you have created a service and a model. Your model should be avaliable to use from a namespace.
 
-For this example, we would assume a test model in **app/Resources/Student/v1/Model/**. See a summary of what it should look like;
+For this example, we would assume a test model in **src/Resources/Student/v1/Model/**. See a summary of what it should look like;
 
 ```php
 namespace Resources\Student\v1\Model;
@@ -447,7 +443,7 @@ php assist fatapi make:dbms sessionConnection
 ```
 Where **sessionConnection** can be any valid function name.
 
-This would create a new method **sessionConnection()** in **Engine\DBMS** class located in **app/Engine/DBMS.php**.
+This would create a new method **sessionConnection()** in **Engine\DBMS** class located in **src/Engine/DBMS.php**.
 
 The content of this method should look like this:
 ```php
@@ -499,7 +495,7 @@ php assist database add connectionName
 ```
 Where connectionName is something you would like to identify that connection with.
 
-Next you open your model file and set the value of **$DBMSConnection** to the new method **sessionConnection or your unquieMethodName** created in **Engine\DBMS** class located in **app/Engine/DBMS.php**. See example below;
+Next you open your model file and set the value of **$DBMSConnection** to the new method **sessionConnection or your unquieMethodName** created in **Engine\DBMS** class located in **src/Engine/DBMS.php**. See example below;
 ```php
 namespace Resources\Student\v1\Model;
 ...
@@ -533,7 +529,7 @@ Middleware provides services to your resources beyond those available from the c
 ```php
 php assist fatapi make:ware MIDDLEWARE_NAME
 ```
-Lets assume that we have called our middleware **MustBeAuthorized**, now we can apply it to a resource service class or method. To do this, open **app/Resources/middleware.json**. To demostrate this, we would apply this for every post requests particular to a service called **Student**, We can even go further by adding more to the array or be direct to a specific class method **Profile**.
+Lets assume that we have called our middleware **MustBeAuthorized**, now we can apply it to a resource service class or method. To do this, open **src/Resources/middleware.json**. To demostrate this, we would apply this for every post requests particular to a service called **Student**, We can even go further by adding more to the array or be direct to a specific class method **Profile**.
 ```json
 {
     "verbs" : {
@@ -547,7 +543,7 @@ Lets assume that we have called our middleware **MustBeAuthorized**, now we can 
 ```
 
 # How to filter every input from a request
-You just need to add an entry to the **app/Resources/input.json** file and then the system ensures that what is presented to you has been checked and passed. Else, it stops processing the request and asks the developer for the correct/required data. Now, lets take an example to demostrate, we call this service **student** with a method called **login**. This request method will be POST and would trigger the class file **PostStudent** in the Student resource folder. Now, to lock on this request for the required data we just add this to our **app/Resources/input.json** file
+You just need to add an entry to the **src/Resources/input.json** file and then the system ensures that what is presented to you has been checked and passed. Else, it stops processing the request and asks the developer for the correct/required data. Now, lets take an example to demostrate, we call this service **student** with a method called **login**. This request method will be POST and would trigger the class file **PostStudent** in the Student resource folder. Now, to lock on this request for the required data we just add this to our **src/Resources/input.json** file
 
 ```json
 [
@@ -648,7 +644,7 @@ class Test implements ModelInterface
 ```
 
 # How to switch versions
-You can do this from the **app/Resources/versioning.json** file for different request methods. Lets paint a scenario, You've built your services and now you want your consumers to use a new version without having to update your frontend? This is possible for not just a service but for a specific method also. How do we do this? see example below 
+You can do this from the **src/Resources/versioning.json** file for different request methods. Lets paint a scenario, You've built your services and now you want your consumers to use a new version without having to update your frontend? This is possible for not just a service but for a specific method also. How do we do this? see example below 
 ```json
 {
     "POST" : {
@@ -700,7 +696,7 @@ Here is a complete list of our model magic methods that can be used in an extern
 # Sending Transactional and Business Emails
 Out of the box, you can now send emails using the **symfony/mailer** package. We've extended this library to simplify it use cases starting from configuration down to sending mails with attachments and more. For more information on this package please visit [https://symfony.com/doc/current/mailer.html]
 
-Having that out of the way, let's begin with the configuration. Open the file **app/Messaging/Emails/config.php** to make your configuration. 
+Having that out of the way, let's begin with the configuration. Open the file **src/Messaging/Emails/config.php** to make your configuration. 
 ```php
 /**
  * Configuration for sending out emails
@@ -717,7 +713,7 @@ return [
 Our default handler for the SymfonyMailer package is **Messaging\Emails\Handlers\SymfonyMailer::class** and you can change it if you feel like.
 
 ## Next, creating dynamic methods and linking them to a template file
-You've got it already, from the **app/Messaging/Emails/email-list.json** file you can just add dynamic methods that would represent one or more template files. See an example below;
+You've got it already, from the **src/Messaging/Emails/email-list.json** file you can just add dynamic methods that would represent one or more template files. See an example below;
 ```json
 {
     "sendWelcomeMessage" : {
@@ -731,14 +727,14 @@ You've got it already, from the **app/Messaging/Emails/email-list.json** file yo
     }
 }
 ```
-The template "welcome" represents a template file that must have been created in **app/Messaging/Emails/Templates/Business/** directory as **welcome.html** and may contain one or more placeholders to mask actual data. You can also see the category. So far we have two categories and i'll take you where their template files lives;
+The template "welcome" represents a template file that must have been created in **src/Messaging/Emails/Templates/Business/** directory as **welcome.html** and may contain one or more placeholders to mask actual data. You can also see the category. So far we have two categories and i'll take you where their template files lives;
 
 | Category | Directory |
 |----------|-----------|
-| LoadBusinessTemplate | *app/Messaging/Emails/Templates/Business/* |
-| LoadTransactionalTemplate | *app/Messaging/Emails/Templates/Transactional/* |
+| LoadBusinessTemplate | *src/Messaging/Emails/Templates/Business/* |
+| LoadTransactionalTemplate | *src/Messaging/Emails/Templates/Transactional/* |
 
-You are free to create more categories with additional methods that points to where a template can be fetched when called by the category name in **app/Messaging/Emails/EmailTemplate.php**.
+You are free to create more categories with additional methods that points to where a template can be fetched when called by the category name in **src/Messaging/Emails/EmailTemplate.php**.
 
 "entities" tells what to expect from the developer. These fields can contain default data as seen below:
 ```json
@@ -789,7 +785,7 @@ We've created a class called **Messaging\EmailAlerts::class** that houses all al
 3. Failed purchase
 etc.
 
-These alerts can be added in the **Messaging\EmailAlerts** class in **app/Messaging/EmailAlerts.php** and called from that namespace when the need arises. See an example below
+These alerts can be added in the **Messaging\EmailAlerts** class in **src/Messaging/EmailAlerts.php** and called from that namespace when the need arises. See an example below
 
 ```php
 <?php
@@ -835,7 +831,7 @@ class EmailAlerts
 EmailAlerts::newSubscriberAlert();
 
 ```
-Remember, all alerts must have a template file saved in **app/Messaging/Emails/Templates/Business/** for business and **app/Messaging/Emails/Templates/Transactional** for transactional mails like "login, confirm password" etc.
+Remember, all alerts must have a template file saved in **src/Messaging/Emails/Templates/Business/** for business and **src/Messaging/Emails/Templates/Transactional** for transactional mails like "login, confirm password" etc.
 
 
 There you go, have fun building great stuffs with it.

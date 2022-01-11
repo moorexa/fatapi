@@ -1,0 +1,85 @@
+<?php
+
+// load config
+require_once 'app.config';
+
+// get arguments
+$arguments = $_SERVER['argv'];
+
+// should we install
+if (isset($arguments[1]) && $arguments[1] == 'install') :
+
+    // load installer
+    $directory = APPLICATION_ROOT;
+
+    // check if folder exists
+    if (is_dir($directory)) : return fwrite(STDOUT, 'Cannot install framework to this path "'.$directory.'"'. PHP_EOL); endif;
+
+    // create directory
+    mkdir($directory);
+
+    // get directory
+    $currentDirectory = __DIR__;
+
+    // change directory
+    chdir($directory);
+
+    // create install
+    file_put_contents('install.php', file_get_contents('http://moorexa.com/download/raw-micro'));
+
+    // run installer
+    pclose(popen('php install.php', 'w'));
+
+    // go back to home
+    chdir($currentDirectory);
+
+    // install composer
+    fwrite(STDOUT, 'Installing composer for your project in framework path "'.$directory.'"'. PHP_EOL);
+
+    // run installer
+    pclose(popen('php composer install', 'w'));
+
+    // install packages
+    pclose(popen('php composer update', 'w'));
+
+    // add route
+    $fh = fopen($directory . '/src/services/routes.php', 'a+');
+    fwrite($fh, 'if (defined(\'FATAPI_BASE\')) require_once FATAPI_BASE . \'/Verb/Routes.php\';');
+    fclose($fh);
+
+    // update config.yaml
+    $fh = fopen($directory . '/src/config.yaml', 'a+');
+    fwrite($fh, "\n# set the default version\n");
+    fwrite($fh, "version: v1\n");
+    fwrite($fh, "# set the developer email\n");
+    fwrite($fh, "developer : ''\n");
+    fclose($fh);
+
+    // add fatapi to bash
+    $fh = fopen($directory . '/src/console/bash_scripts.yaml', 'a+');
+    fwrite($fh, "\n# add app builder\n");
+    fwrite($fh, "fatapi : '%FATAPI_BASE%/Engine/Console/apibuilder.php'\n");
+    fclose($fh);
+
+    // installation complete
+    fwrite(STDOUT, PHP_EOL . 'Installation Complete!'. PHP_EOL);
+
+else:
+
+    // check arguments
+    if (isset($arguments[1]) && strpos($arguments[1], 'make') === false) :
+
+        // add cli manager
+        $_SERVER['argv'][0] = FRAMEWORK_CLI;
+
+    else:
+
+        // add assist
+        array_unshift($_SERVER['argv'], FRAMEWORK_CLI);
+
+    endif;
+
+    // load assist from framework
+    if (file_exists(FRAMEWORK_CLI_MANAGER)) require_once FRAMEWORK_CLI_MANAGER;
+
+endif;
