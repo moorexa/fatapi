@@ -85,9 +85,9 @@ Lets look at what this files and folders could help us accomplish and their usef
 | Documentation | GetUser.md | Providers a documentation for the GetUser service, and can be called if **x-meta-doc** is added to the request header |
 | Documentation | PostUser.md | Providers a documentation for the PostUser service, and can be called if **x-meta-doc** is added to the request header |
 | Model | ... | Contains all our model classes for our routes and can be generated from the CLI or Terminal |
-| Providers | CreateProvider.php | Contains all route methods that triggers a create transaction and are typically just routes that are added from the terminal if structured this way **"php assist fatapi make:route {service}/create-{routeName}"**|
-| Providers | UpdateProvider.php | Contains all route methods that triggers an update transaction and are typically just routes that are added from the terminal if structured this way **"php assist fatapi make:route {service}/update-{routeName}"**|
-| Providers | DeleteProvider.php | Contains all route methods that triggers a delete transaction and are typically just routes that are added from the terminal if structured this way **"php assist fatapi make:route {service}/delete-{routeName}"**|
+| Providers | CreateProvider.php | Contains all route methods that triggers a create transaction and are typically just routes that are added from the terminal if structured this way **"php fatapi make:route {service}/create-{routeName}"**|
+| Providers | UpdateProvider.php | Contains all route methods that triggers an update transaction and are typically just routes that are added from the terminal if structured this way **"php fatapi make:route {service}/update-{routeName}"**|
+| Providers | DeleteProvider.php | Contains all route methods that triggers a delete transaction and are typically just routes that are added from the terminal if structured this way **"php fatapi make:route {service}/delete-{routeName}"**|
 | ... | PostUser.php | Our main handler for every post requests sent to this User service |
 | ... | GetUser.php | Our main handler for every get requests sent to this User service |
 
@@ -440,7 +440,7 @@ public function Init(Request $request, Response $response) : void
 # How to connect your model to a database
 First you need to have created a model file, next we create a new connection with the command below
 ```php
-php assist fatapi make:dbms sessionConnection
+php fatapi make:dbms sessionConnection
 ```
 Where **sessionConnection** can be any valid function name.
 
@@ -528,7 +528,7 @@ Now, your model is connected to a database using that connection method which ty
 # How to apply a middleware to a resource
 Middleware provides services to your resources beyond those available from the core system. It can be described as "service glue". Creating one is simple and can be done with the following command below, where MIDDLEWARE_NAME is something unquiue to you.
 ```php
-php assist fatapi make:ware MIDDLEWARE_NAME
+php fatapi make:ware MIDDLEWARE_NAME
 ```
 Lets assume that we have called our middleware **MustBeAuthorized**, now we can apply it to a resource service class or method. To do this, open **src/Resources/middleware.json**. To demostrate this, we would apply this for every post requests particular to a service called **Student**, We can even go further by adding more to the array or be direct to a specific class method **Profile**.
 ```json
