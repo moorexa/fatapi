@@ -15,7 +15,8 @@ Crafted for PHP developers. It's great for personal, enterprise, and commercial 
 
 # Requirements
 1. PHP 7 and above
-2. Knowledge of PHP and a bit of Moorexa Framework
+2. Knowledgable in PHP and OOP
+3. Added knowledge of Moorexa ORM is a plus but not neccessary, everything is auto generated for you.
 
 # Installation
 It's way easy!!! Just download a copy of this project and run the following command from your CLI or Terminal
