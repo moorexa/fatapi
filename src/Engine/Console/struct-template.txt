@@ -1,0 +1,24 @@
+<?php
+namespace Resources\{SERVICE}\{VERSION}\Data;
+
+use Engine\StructHelper;
+/**
+ * @package Struct
+ * @author Amadi Ifeanyi <amadiify.com>
+ */
+class Struct
+{
+    use StructHelper;
+
+    /**
+     * @method Struct user
+     * @return array
+     */
+    public function user() : array 
+    {
+        return [
+            'userid',
+        ];
+    }
+
+}

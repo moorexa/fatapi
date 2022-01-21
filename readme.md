@@ -8,6 +8,30 @@ A Powerful REST API Framework for small and large projects.
 
 Crafted for PHP developers. It's great for personal, enterprise, and commercial backend applications.
 
+# Why FatApi
+Building backend applications for years led us to this one stop solution. Over the years we've built REST API's with the following request methods **GET, POST, DELETE, PUT** and we've also had to worry about;
+
+1. Versioning
+2. Building light then scalling to micro services
+3. Managing multiple endpoints that are procedural
+4. Creating standards for our requests and responses even when contracting some part of our backend application to remote developers
+5. Generating documentation for every services without writing one line of code.
+6. Getting extra stuffs done like obtaining packages for authentication, middlewares, live documentation, plugins and much more from a marketplace so we don't have to reinvent the wheel. 
+
+Yeah, creating this takes so much time, and many startups, developer, or software agency would worry less if they had a foundational system like this that allows:
+
+1. Connectivity to external services
+2. Creating small programs that can be decoupled into micro services when the business scales
+3. Building strict entities that are consitent across versions
+4. Generating responses that follow standards, easy to comprehend and consistent with formats
+5. Clean URL that explains what it does, allowing developers to obtain documentation with an additional request header **x-meta-doc**
+4. Reduced cost in managing multiple endpoints and do more without having to add request ID's to your endpoints, keeping it neat and enjoyable.
+5. Adopting new request standards that takes out **DELETE** and **PUT** request methods but, out of the box lets you can do lot more with only **GET** and **POST** request methods which has made FATAPI so unqiue and easy to work with.
+6. Also allow you use all request methods for external services. Yeah, FATAPI also serves as a gateway, connecting you to other services you may have on multiple servers, and allow you version them with no sweat.
+5. Getting up to speed by obtaining services, middlewares, plugins, documentation templates and much more from the **FatApi Marketplace**.
+
+The list can go on and on. This is a low code movement and we what to help you increase productivity by getting your backend rolled out in no time, properly documented and enjoyable.
+
 ## Architectural Style or Pattern
 1. Event-Bus pattern
 2. Micro-Services
@@ -25,8 +49,40 @@ php fatapi install
 ```
 Running this command will install all you need, including local composer and all the required dependencies.
 
-# Introduction
-So why FATAPI? Building backend applications for years led us to this one stop solution. Over the years we've built REST API's with the following request methods **GET, POST, DELETE, PUT** and we've also had to worry about versioning, building light then scalling to micro services, managing multiple endpoints that are procedural, creating standards for our requests and responses even when contracting some part of our backend application to remote developers, making documentation accessible via a special link eg. mydomain.com/api/doc. Yeah, creating this takes so much time, and many startups, developer, or software agency would worry less if they had a foundational system like this that allows connectivity to external services, creating small programs that can be decoupled into services when the business scales, building strict entities that is consitent across versions, version control services and methods, reduce cost to manage multiple endpoints and use only **GET** and **POST** request methods with a meta data to fetch and update services. The list can go on and on, but that's where FATAPI comes in. With it, you can build backend applications that allows for all this possiblities and more.
+# Getting Started
+First, we must authorize every requests. And to do that, we just need to generate a token from the command line using
+```php
+php fatapi make:token {unqiue name}
+```
+Where **{unqiue name}** can be the name of your project or something unique to you. Next, we update the **MustBeAuthorized** middleware located in **src/Middlewares/**. You can also check out the **FatApi marketplace** for authorization middlewares that allow you do much more like rate limter, timeout etc. 
+
+By default, we've added **MustBeAuthorized** middleware so you can still get stuffs done without needing to go premium at this point. 
+
+After generating this token, you should get a token size of **40**, copy it and update the **MustBeAuthorized** middleware as seen below.
+
+```php
+/**
+ * @package MustBeAuthorized
+ * @author Amadi Ifeanyi <amadiify.com>
+ */
+class MustBeAuthorized implements MiddlewareInterface
+{
+    /**
+     * @var string $authorizationToken
+     * 
+     * You should generate a new token from the CLI and update authorizationToken with it
+     * By default, the system would auto generate one and load the request with it which is not the best
+     * use 'php fatapi make:token {unique name}' to generate and update $authorizationToken
+     */
+    public $authorizationToken = '388b77473d46a13724192ae7735219a2ecae7a1b';
+
+    ...
+```
+The token should be your newly generated token. Next, you can now share this token to be added to the authorization header for every incoming request as seen below.
+```http
+Authorization : Bearer <generated token>
+```
+
 
 # Find help for a request method 
 Starting new on fatapi? You can access a quick help for specific request methods. See table below
@@ -49,6 +105,8 @@ Here are commands that can help you speed up development.
 | make:model | php fatapi make:model service/modelName:v2 | This create a new model for a particular service in **src/Resources/{service}/{version}/Model** |
 | make:dbms | php fatapi make:dbms {connectionName} | This create a new connection method for your models in **src/Engine/DBMS.php** |
 | make:route | php fatapi make:route {service}/{routeName} | This create a new route method for a service in **src/Resources/{service}/{version}** |
+| make:token | php fatapi make:token {unqiue name} | This generates a unqiue token that can be used for request headers and more |
+
 
 # How to create a new service
 Services are like resources that contains one or more routes. They are packed with providers, models and some helpful classes and methods for building a functional and scalable systems.
@@ -542,6 +600,72 @@ Lets assume that we have called our middleware **MustBeAuthorized**, now we can 
     }
 }
 ```
+
+# How to apply a middleware to a method directly
+Middlewares can now be added to your methods directly as part of the doc comment. We would demostrate with our assumed middleware **MustBeAuthorized** which can be found in **src/Middlewares/**.
+```php
+/**
+ * @package GetAuthentication
+ * @author Amadi Ifeanyi <amadiify.com>
+ *
+ * @start.doc
+ * 
+ * .. Your documentation content goes in here.
+ */
+class GetAuthentication implements ResourceInterface
+{
+    /**
+     * @method GetAuthentication Init
+     * @param Request $request
+     * @param Response $response
+     * @return void
+     * @middleware Middlewares\MustBeAuthorized
+     * 
+     * @start.doc
+     * 
+     * .. Your documentation content goes in here.
+     * 
+     */
+    public function Init(Request $request, Response $response) : void
+    {
+        $response->success('It works!');
+    }
+
+    ...
+```
+Take note of the tag **@middleware**! Now, every request into that route must pass that middleware before dealing with the request body. You can have more than one middleware as seen below
+```php
+/**
+ * @package GetAuthentication
+ * @author Amadi Ifeanyi <amadiify.com>
+ *
+ * @start.doc
+ * 
+ * .. Your documentation content goes in here.
+ */
+class GetAuthentication implements ResourceInterface
+{
+    /**
+     * @method GetAuthentication Init
+     * @param Request $request
+     * @param Response $response
+     * @return void
+     * @middleware Middlewares\MustBeAuthorized
+     * @middleware Middlewares\ExampleMiddleWare2
+     * 
+     * @start.doc
+     * 
+     * .. Your documentation content goes in here.
+     * 
+     */
+    public function Init(Request $request, Response $response) : void
+    {
+        $response->success('It works!');
+    }
+
+    ...
+```
+
 
 # How to filter every input from a request
 You just need to add an entry to the **src/Resources/input.json** file and then the system ensures that what is presented to you has been checked and passed. Else, it stops processing the request and asks the developer for the correct/required data. Now, lets take an example to demostrate, we call this service **student** with a method called **login**. This request method will be POST and would trigger the class file **PostStudent** in the Student resource folder. Now, to lock on this request for the required data we just add this to our **src/Resources/input.json** file

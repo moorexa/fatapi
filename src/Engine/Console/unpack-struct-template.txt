@@ -1,0 +1,29 @@
+<?php
+namespace Resources\{SERVICE}\{VERSION}\Data;
+
+use Engine\{DBMS, StructData};
+use function Lightroom\Database\Functions\{db, db_with};
+
+/**
+ * @package UnpackStruct
+ * @author Amadi Ifeanyi <amadiify.com>
+ */
+trait UnpackStruct
+{
+    /**
+     * @method UnpackStruct unpackStructExample
+     * @param object $row
+     * @return StructData
+     */
+    public static function unpackStructExample(object $row) : StructData
+    {
+        // load user strucy
+        $model = Struct::load('user');
+
+        // unpack data
+        $model->userid = $row->userid;
+
+        // return model
+        return $model;
+    }
+}

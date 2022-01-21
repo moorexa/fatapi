@@ -1,0 +1,19 @@
+{
+    "name" : "FatApi",
+    "version" : "1.0",
+    
+    "documentation" : {
+        "title" : "",
+        "description" : "",
+        "logo" : "",
+        "facebook" : "",
+        "twitter" : "",
+        "github" : ""
+    },
+
+    "author" : {
+        "name" : "",
+        "email" : "",
+        "website" : ""
+    }
+}

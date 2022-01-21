@@ -1,0 +1,36 @@
+<?php
+namespace Resources\{SERVICE}\{VERSION}\Data;
+
+use Engine\{DBMS, StructData, Table};
+use Lightroom\Database\DatabaseHandler as Database;
+use function Lightroom\Database\Functions\{db, db_with};
+/**
+ * @package GeneralQuery
+ * @author Amadi Ifeanyi <amadiify.com>
+ * 
+ * After insertion, you can get the last inserted id with Database::$lastInsertId
+ */
+class GeneralQuery
+{
+    use UnpackStruct;
+
+    const EXAMPLE_TABLE = 'table_name';
+
+    /**
+     * @method GeneralQuery getExampleTableID
+     * @param StructData $data
+     * @return mixed
+     */
+    public static function getExampleTableID(StructData $data)
+    {
+        // please remove
+        $query = db(static::EXAMPLE_TABLE)->get('email = ?', $data->email)->go();
+
+        // are we good ?
+        if ($query->rowCount() > 0) $data = GeneralQuery::unpackStructExample($query->fetch(FETCH_OBJ));
+
+        // return data
+        return $data;
+    }
+
+}

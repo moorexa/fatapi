@@ -3,10 +3,16 @@ namespace Resources\{SERVICE}\{VERSION};
 
 use Messaging\EmailAlerts;
 use Messaging\Emails\EmailSender;
-use Engine\{Interfaces\ResourceInterface, Request, Response};
+use Resources\{SERVICE}\{VERSION}\Data\{GeneralQuery, Struct};
+use Engine\{Interfaces\ResourceInterface, Request, Response, StructData};
+
 /**
  * @package Post{SERVICE}
  * @author Amadi Ifeanyi <amadiify.com>
+ *
+ * @start.doc
+ * 
+ * .. Your documentation content goes in here.
  */
 class Post{SERVICE} implements ResourceInterface
 {
@@ -18,14 +24,14 @@ class Post{SERVICE} implements ResourceInterface
      * @method Post{SERVICE} Init
      * @param Request $request
      * @param Response $response
-     * @return void
+     * @return mixed
      * 
      * @start.doc
      * 
      * .. Your documentation content goes in here.
      * 
      */
-    public function Init(Request $request, Response $response) : void
+    public function Init(Request $request, Response $response)
     {
         $response->success('It works!');
     }

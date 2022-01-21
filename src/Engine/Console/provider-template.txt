@@ -3,7 +3,9 @@ namespace Resources\{SERVICE}\{VERSION}\Providers;
 
 use Messaging\EmailAlerts;
 use Messaging\Emails\EmailSender;
-use Engine\{Request, Response};
+use Engine\{Request, Response, StructData};
+use Resources\{SERVICE}\{VERSION}\Data\{GeneralQuery, Struct};
+
 /**
  * @package {PROVIDER}
  * @author Amadi Ifeanyi <amadiify.com>

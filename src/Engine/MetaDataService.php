@@ -78,7 +78,7 @@ class MetaDataService
      * @param string $requestMethod
      * @return mixed
      */
-    public static function loadDocumentation(string $service, string $requestMethod)
+    public static function loadDocumentation(string $service, string $requestMethod, string $method)
     {
         // service class
         $serviceClass = ucfirst($service);
@@ -89,17 +89,17 @@ class MetaDataService
         // check if version exists
         if (!is_dir(self::$baseApiFolder . $serviceClass . '/' . self::$version)) return self::versionDoesNotExistsForDoc();
 
-        // @var string $method
-        $method = post()->has('method') ? post()->method : '';
+        // update method
+        $method = self::cleanServiceMethod($method);
 
         // check for method
-        if ($method != '') $path = self::$baseApiFolder . $serviceClass . '/' . self::$version . '/Documentation/' . $serviceClass . '/' . $requestMethod . ucfirst($method) . '.md';
+        if ($method != '') $path = self::$baseApiFolder . $serviceClass . '/' . self::$version . '/Documentation/' . $serviceClass . '/' . $requestMethod . $method . '.md';
 
         // check in docs
-        if (!file_exists($path)) return self::noDocumentationFound($serviceClass, $method, $requestMethod);
+        // if (!file_exists($path)) return self::noDocumentationFound($serviceClass, $method, $requestMethod);
 
         // parse now
-        self::parseMarkdownToHTML($path, $service, $requestMethod);
+        self::parseMarkdownToHTML($path, $service, $requestMethod, $method);
     }
 
     /**
@@ -117,7 +117,7 @@ class MetaDataService
         $path = FATAPI_BASE . '/Verb/' . strtoupper($requestMethod) . '/' . $requestMethod . $service . '.md';
 
         // check in docs
-        if (!file_exists($path)) return self::noDocumentationFound($serviceClass, '', $requestMethod);
+        // if (!file_exists($path)) return self::noDocumentationFound($serviceClass, '', $requestMethod);
 
         // parse now
         self::parseMarkdownToHTML($path, $service, $requestMethod);
@@ -157,7 +157,7 @@ class MetaDataService
         $requestMethod = ucfirst(strtolower($_SERVER['REQUEST_METHOD']));
 
         // update service
-        $service = ucfirst($filter->service);
+        $service = $filter->service = ucfirst($filter->service);
 
         // load service version 
         self::loadServiceVersion($requestMethod, $filter);
@@ -166,7 +166,7 @@ class MetaDataService
         if (self::$param == '') self::setParam($filter->id);
 
         // has documentation request?
-        if (post()->has('doc') || headers()->has('x-meta-doc')) return self::loadDocumentation($filter->service, $requestMethod);
+        if (post()->has('doc') || headers()->has('x-meta-doc')) return self::loadDocumentation($filter->service, $requestMethod, $filter->method);
 
         // create class
         $className = $requestMethod . $service;
@@ -227,8 +227,13 @@ class MetaDataService
             // check if method exists
             if (!method_exists($class, $filter->method)) return self::serviceMethodNotFound($filter->method);
 
-            // load from request
-            Request::loadResource($filter, $class, self::$param);
+            // check for @middleare flag for this method
+            self::hasMiddlewareFlagForMethod($class, $filter->method, function() use (&$filter, &$class){
+
+                // load from request
+                Request::loadResource($filter, $class, self::$param);
+
+            });
 
         });
     }
@@ -309,19 +314,48 @@ class MetaDataService
             // update service
             $service = strtolower($filter->service) . ($filter->method != self::$defaultMethod ? '.' . strtolower($filter->method) : '');
 
+            // load verbs
+            $verbs = $version->Verbs;
+
+            // prev version
+            $prevVersion = self::$version;
+
             // load method
-            if (isset($version->{$method})) :
+            if (isset($verbs->{$method})) :
 
                 // load service 
-                if (isset($version->{$method}->{$service}) && isset($version->{$method}->{$service}->version)) :
+                if (isset($verbs->{$method}->{$service}) && isset($verbs->{$method}->{$service}->version)) :
 
                     // load version
-                    $version = $version->{$method}->{$service}->version;
+                    $version = $verbs->{$method}->{$service}->version;
 
                     // update global version
-                    self::$version = $version != '' ? $version : $version;
+                    self::$version = $version != '' ? $version : self::$version;
 
                 endif;
+
+            endif;
+
+            // load resources
+            $resources = $version->Resources;
+
+            // can we check
+            if ($prevVersion == self::$version) :
+
+                foreach ($resources as $resourceName => $versioning) :
+
+                    // check resource name
+                    if (strtolower($resourceName) == strtolower($filter->service)) :
+                        
+                        // set version
+                        self::$version = $versioning->version;
+
+                        // break
+                        break;
+                        
+                    endif;
+
+                endforeach;
 
             endif;
 
@@ -409,8 +443,8 @@ class MetaDataService
 
             // load filter
             $filter = filter(['service' => $service, 'method' => $method], [
-                'service'   => [self::$filter, ($post->has('service') ? $post->service : '')],
-                'method'    => [self::$filter, ($post->has('method') ? $post->method : '')],
+                'service'   => [self::$filter, ($post->has('service') ? $post->service : $service)],
+                'method'    => [self::$filter, ($post->has('method') ? $post->method : $method)],
                 'id'        => ['string|required|notag', ($post->has('id') ? $post->id : $id)]
             ]);
 
@@ -430,7 +464,7 @@ class MetaDataService
      * @param string $requestMethod
      * @return void
      */
-    private static function parseMarkdownToHTML(string $path, string $service, string $requestMethod) : void
+    private static function parseMarkdownToHTML(string $path, string $service, string $requestMethod, string $method = '') : void
     {
         // change content type
         header('Content-Type: text/html');
@@ -451,14 +485,63 @@ class MetaDataService
         // add javascript link
         $template = str_replace('{JAVASCRIPT}', func()->url(FATAPI_BASE . '/Static/style/highlight.js'), $template);
 
+        // read markdown
+        if ($method != '') $template = str_replace('{MARKDOWN}', $parser->parse(self::loadDocComment($service, $requestMethod, $method)) . "\n\n{MARKDOWN}", $template);
+
         // add markdown
-        $template = str_replace('{MARKDOWN}', $parser->parse(file_get_contents($path)), $template);
+        $template = file_exists($path) ?  str_replace('{MARKDOWN}', $parser->parse(file_get_contents($path)), $template) : $template;
+
+        // remove markdown
+        $template = str_replace('{MARKDOWN}', '', $template);
 
         // add highlight js
         $template = str_replace('code class="', 'code class="hljs ', $template);
 
         // view now
         echo $template;
+    }
+
+    /**
+     * @method MetaDataService loadDocComment
+     * @param string $service
+     * @param string $requestMethod
+     * @param string $method
+     */
+    private static function loadDocComment(string $service, string $requestMethod, string $method)
+    {
+        // load 
+        $class = \Moorexa\Framework\Doc::class;
+
+        // @var bool
+        $docInstalled = false;
+
+        // build path
+        $path = defined('CONTROLLER_ROOT') ? CONTROLLER_ROOT . '/Doc/main.php' :  APPLICATION_ROOT . '/app/Doc/main.php';
+
+        // check if path exists
+        if (file_exists($path)) :
+
+            // load now
+            include_once $path;
+
+            // class class
+            if (class_exists($class)) $docInstalled = true;
+
+        endif;
+
+        // check if class exists
+        if ($docInstalled) :
+
+            $doc = ClassManager::singleton($class);
+
+            // return doc
+            return $doc->loadInlineDocumentation($service, $requestMethod, $method, self::$version);
+
+        else:
+
+            return '<pre><code>You can not see a complete documentation until you install <b>FatApi documentation plugin</b>. You need to visit our marketplace or click on the link to proceed <a href="https://fatapi.org/">fatapi.org</a></code></pre>';
+
+        endif;
     }
 
     /**
@@ -720,5 +803,65 @@ class MetaDataService
         if (ob_get_contents() == '') ClassManager::singleton(\Engine\Response::class)
         ->failed('At this point we can only tell that these "'.implode(', ', $resourceList).'" middlewares failed for the resource class or method.');
 
+    }
+
+    /**
+     * @method MetaDataService hasMiddlewareFlagForMethod
+     * @param ResourceInterface $resource
+     * @param string $method
+     * @param Closure $callback
+     * @return mixed
+     */
+    private static function hasMiddlewareFlagForMethod(ResourceInterface $resource, string $method, Closure $callback)
+    {
+        // load reflection method
+        $reflectionMethod = new \ReflectionMethod($resource, $method);
+
+        // get comment
+        $comment = $reflectionMethod->getDocComment();
+
+        // free up
+        $reflectionMethod = null;
+
+        // has middleware
+        if (strpos($comment, '@middleware') !== false) :
+
+            // find all middlwares
+            preg_match_all('/(@middleware)[\s]{1,}([^\n]+)/', $comment, $middlewares);
+
+            if (isset($middlewares[2])) :
+
+                // middleware passed
+                $middlewarePassed = 0;
+
+                // run loop
+                array_map(function($middleware) use (&$middlewarePassed){
+
+                    // apply middleware and update counter
+                    $middlewarePassed += (Middlewares::apply(trim($middleware), [])) ? 1 : 0;
+
+                }, $middlewares[2]);
+
+                // are we good ?
+                if ($middlewarePassed == count($middlewares[2])) return call_user_func($callback);
+
+                // request altered??
+                if (ob_get_contents() == '') : ClassManager::singleton(\Engine\Response::class)
+                ->failed('At this point we can only tell that these "'.implode(', ', $middlewares[2]).'" middlewares failed for the resource method "'.$method.'".');
+                endif;
+
+            else:
+
+                // program error, no middleware found
+                call_user_func($callback);
+
+            endif;
+
+        else:
+
+            // call closure
+            call_user_func($callback);
+
+        endif;
     }
 }

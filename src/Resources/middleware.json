@@ -1,6 +1,7 @@
 {
     "verbs" : {
-        "POST" : ["Middlewares\\PostMustHaveData"]
+        "POST" : ["Middlewares\\MustBeAuthorized", "Middlewares\\PostMustHaveData"],
+        "GET" : ["Middlewares\\MustBeAuthorized"]
     },
     "resources" : {
         "Resources\\ExampleService\\v1\\PostStudent" : [],

@@ -209,7 +209,7 @@ class Request implements Interfaces\RequestInterface
                 endif;
 
                 // @var bool $isMethod
-                $isMethod = (($data->service.'.'.$data->method) == $resource ? true : (($data->service.'.'.self::formatName($data->method)) == $resource ? true : false));
+                $isMethod = (($data->service.'.'.$data->method) == $resource ? true : ((ucfirst($data->service).'.'.self::formatName($data->method)) == $resource ? true : false));
 
                 // Has resource, verb, and version to continue
                 if ($isMethod && strtoupper($data->verb) == $verb) :

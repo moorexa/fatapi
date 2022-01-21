@@ -1,6 +1,7 @@
 <?php
 use Classes\Cli\Assist;
 
+use function Lightroom\Security\Functions\{md5s};
 /**
  * @package API Builder
  * @author Amadi Ifeanyi <amadiify.com>
@@ -14,6 +15,7 @@ define('MAKE_ROUTE', 'make:route');
 define('MAKE_MIDDLEWARE', 'make:ware');
 define('MAKE_DOCUMENTATION', 'make:doc');
 define('MAKE_CONNECTION', 'make:dbms');
+define('MAKE_TOKEN', 'make:token');
 define('COMMAND', 0);
 define('ACTION', 1);
 
@@ -75,16 +77,21 @@ if (count($arguments) > 0 && isset($arguments[ACTION])) :
                     // required folders
                     $foldersAndFiles = [
                         'Documentation' => [
-                            'Get{SERVICE}.md' => __DIR__ . '/newgetdoc.md',
-                            'Post{SERVICE}.md' => __DIR__ . '/newpostdoc.md',
+                            'Get{SERVICE}.md'   => __DIR__ . '/newgetdoc.md',
+                            'Post{SERVICE}.md'  => __DIR__ . '/newpostdoc.md',
                         ],
                         'Model' => [],
+                        'Data' => [
+                            'GeneralQuery.php'      => __DIR__ . '/general-query-template.txt',
+                            'Struct.php'            => __DIR__ . '/struct-template.txt',
+                            'UnpackStruct.php'      => __DIR__ . '/unpack-struct-template.txt',
+                        ],
                         'Providers' => [
                             'CreateProvider.php' => __DIR__ . '/provider-template.txt',
                             'DeleteProvider.php' => __DIR__ . '/provider-template.txt',
                             'UpdateProvider.php' => __DIR__ . '/provider-template.txt',
                         ],
-                        'Get{SERVICE}.php' => __DIR__ . '/get-service-template.txt',
+                        'Get{SERVICE}.php'  => __DIR__ . '/get-service-template.txt',
                         'Post{SERVICE}.php' => __DIR__ . '/post-service-template.txt',
                     ];
 
@@ -445,9 +452,22 @@ if (count($arguments) > 0 && isset($arguments[ACTION])) :
 
         break;
 
+        // create token
+        case MAKE_TOKEN:
+
+            $token = sha1(md5s(file_get_contents(FATAPI_BASE . '/info.json')) . time() * mt_rand(2, 50) . $arguments[ACTION]);
+
+            Assist::out('Token generated size {'.strlen($token).'}' . PHP_EOL, $assist->ansii('green'));
+            Assist::out($token . "\n\n");
+
+        break;
+
     endswitch;
 
 else:
+
+    // load assist
+    $assist = new Assist;
 
     // no action
     Assist::out('You forgot to add an action', $assist->ansii('red'));

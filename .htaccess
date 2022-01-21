@@ -38,7 +38,7 @@ DefaultLanguage en
 # it gets fast and safe here.
 <IfModule mod_headers.c>
 
-  <FilesMatch "(assist|composer.json|composer.lock|composer|config.xml)">
+  <FilesMatch "(fatapi|composer.json|composer.lock|composer|app.config)">
 	  Deny from all
   </FilesMatch>
 
@@ -48,7 +48,7 @@ DefaultLanguage en
     Header set Access-Control-Allow-Methods "*"
     Header set Access-Control-Allow-Origin "*"
     Header set Vary "Origin"
-    Header set Access-Control-Allow-Headers "x-meta-service, x-meta-method, x-meta-id"
+    Header set Access-Control-Allow-Headers "x-meta-service, x-meta-method, x-meta-id, authorization"
 </IfModule>
 
 RewriteCond %{REQUEST_FILENAME} !-d

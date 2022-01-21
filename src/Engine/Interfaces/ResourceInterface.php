@@ -12,9 +12,9 @@ interface ResourceInterface
      * @method ResourceInterface Init
      * @param Request $request
      * @param Response $response
-     * @return void
+     * @return mixed
      * 
      * This method would load the default method for this interface
      */
-    public function Init(Request $request, Response $response) : void;
+    public function Init(Request $request, Response $response);
 }
