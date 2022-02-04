@@ -1,7 +1,7 @@
 {
     "name": "moorexa/fatapi",
     "description": "A Powerful REST API Framework for small and large projects.",
-    "type": "ppi-module",
+    "type": "library",
     "license": "MIT",
     "minimum-stability": "dev",
     "author" : [
@@ -38,7 +38,7 @@
     },
     "extra": {
         "installer-paths": {
-            "/": ["moorexa/fatapi"]
+            "./": ["moorexa/fatapi"]
         }
     }
 }
