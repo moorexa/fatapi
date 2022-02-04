@@ -81,6 +81,9 @@ if (count($arguments) > 0 && isset($arguments[ACTION])) :
                             'Post{SERVICE}.md'  => __DIR__ . '/newpostdoc.md',
                         ],
                         'Model' => [],
+                        'Events' => [
+                            'Listener.php' => __DIR__ . '/listener-template.txt'
+                        ],
                         'Data' => [
                             'GeneralQuery.php'      => __DIR__ . '/general-query-template.txt',
                             'Struct.php'            => __DIR__ . '/struct-template.txt',

@@ -26,7 +26,7 @@ class EmailTemplate
      * 
      * This method loads a template from the transactional directory
      */
-    public static function LoadTransactionalTemplate(string $templateName, array $data)
+    public static function LoadTransactionalTemplate(string $templateName, array $data, array $config = [])
     {
         return self::getTemplateData('Transactional', $templateName, $data, $config);
     }

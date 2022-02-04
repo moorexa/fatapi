@@ -1,6 +1,12 @@
 <?php
 namespace Resources\{SERVICE}\{VERSION}\Data;
 
+use Closure;
+use Lightroom\Events\{
+    Dispatcher, Listener as EventListener
+};
+use Messaging\EmailAlerts;
+use Messaging\Emails\EmailSender;
 use Engine\{DBMS, StructData, Table};
 use Lightroom\Database\DatabaseHandler as Database;
 use function Lightroom\Database\Functions\{db, db_with};

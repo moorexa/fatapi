@@ -1,6 +1,9 @@
 <?php
 namespace Resources\{SERVICE}\{VERSION};
 
+use Lightroom\Events\{
+    Dispatcher, Listener as EventListener
+};
 use Messaging\EmailAlerts;
 use Messaging\Emails\EmailSender;
 use Resources\{SERVICE}\{VERSION}\Data\{GeneralQuery, Struct};

@@ -1,0 +1,34 @@
+<?php
+namespace Resources\{SERVICE}\{VERSION}\Events;
+
+use Lightroom\Events\{
+    Dispatcher, Listener as EventListener, AttachEvent
+};
+/**
+ * @package Listener
+ * @author Amadi Ifeanyi <amadiify.com>
+ */
+class Listener
+{
+    /**
+     * @method Listener ready
+     * @return void
+     * 
+     * This is a simple implementation of a typical event method.
+     * Now, you can call Listener::{SERVICE}('ready', function($message){}); or
+     * Dispatcher::{SERVICE}('hello', 'Hello my friend');
+     */
+    public static function ready() : void 
+    {
+        // register response class to container
+        app()->add('response', \Engine\Response::class);
+
+        // add queue handler to container
+        app()->add('queue', \Lightroom\Queues\QueueHandler::class);
+        // now you can run app('queue')->sendTask('task name', closure) to send background jobs
+        // see moorexa documentation on queues
+        
+    }
+
+    // more event methods here...
+}

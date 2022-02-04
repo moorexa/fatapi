@@ -1,6 +1,9 @@
 <?php
 namespace Resources\{SERVICE}\{VERSION}\Data;
 
+use Lightroom\Events\{
+    Dispatcher, Listener as EventListener
+};
 use Engine\{DBMS, StructData};
 use function Lightroom\Database\Functions\{db, db_with};
 

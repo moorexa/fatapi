@@ -13,7 +13,18 @@ if (isset($arguments[1]) && $arguments[1] == 'install') :
     $directory = APPLICATION_ROOT;
 
     // check if folder exists
-    if (is_dir($directory)) : return fwrite(STDOUT, 'Cannot install framework to this path "'.$directory.'"'. PHP_EOL); endif;
+    if (is_dir($directory)) : 
+
+        // add cli manager
+        $_SERVER['argv'][0] = FRAMEWORK_CLI;
+
+        // load assist from framework
+        if (file_exists(FRAMEWORK_CLI_MANAGER)) require_once FRAMEWORK_CLI_MANAGER;
+
+        // stop
+        return false;
+
+    endif;
 
     // create directory
     mkdir($directory);
@@ -60,6 +71,11 @@ if (isset($arguments[1]) && $arguments[1] == 'install') :
     fwrite($fh, "\n# add app builder\n");
     fwrite($fh, "fatapi : '%FATAPI_BASE%/Engine/Console/apibuilder.php'\n");
     fclose($fh);
+
+    // use fatapi packager
+    $initFile = file_get_contents($directory . '/init.php');
+    $initFile = str_replace('Lightroom\Packager\Moorexa\MoorexaWebPackager::class', 'Engine\Packager::class', $initFile);
+    file_put_contents($directory . '/init.php', $initFile);
 
     // installation complete
     fwrite(STDOUT, PHP_EOL . 'Installation Complete!'. PHP_EOL);

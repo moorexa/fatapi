@@ -8,6 +8,7 @@ use Lightroom\Adapter\ClassManager;
  */
 trait StructHelper
 {
+
     /**
      * @method StructHelper load
      * @param string $method

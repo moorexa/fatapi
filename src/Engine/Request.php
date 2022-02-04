@@ -50,6 +50,21 @@ class Request implements Interfaces\RequestInterface
     }
 
     /**
+     * @method Request has
+     * @param string $key
+     * @return bool
+     * 
+     * This checks if a key does exists in request data
+     */
+    public function has(string $key) : bool
+    {
+        if (isset($this->requestData[$key])) return true;
+
+        // failed
+        return false;
+    }
+
+    /**
      * @method RequestInterface getSchema
      * This returns the current schema of the request service method.
      */

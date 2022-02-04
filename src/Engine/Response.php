@@ -51,6 +51,9 @@ class Response implements Interfaces\ResponseInterface
 
         // show message
         app('screen')->render($data);
+
+        // return class
+        return $this;
     }
 
     /**
@@ -75,6 +78,9 @@ class Response implements Interfaces\ResponseInterface
 
         // show message
         app('screen')->render($data);
+
+        // return class
+        return $this;
     }
 
     /**
@@ -99,5 +105,46 @@ class Response implements Interfaces\ResponseInterface
 
         // show message
         app('screen')->render($data);
+
+        // return class
+        return $this;
+    }
+
+    /**
+     * @method Response save
+     * @return void
+     * 
+     * This saves the response body to the responses folder for that service method.
+     */
+    public function save()
+    {
+        // get content
+        $content = ob_get_contents();
+
+        // do we have what to save??
+        if ($content != null && strlen($content) > 0) :
+
+            // ok get path
+            $documentationPath = CURRENT_VERSION_PATH . '/Documentation/';
+
+            // create responses folder
+            $responsesFolder = $documentationPath . 'Responses/';
+
+            // create folder
+            if (!is_dir($responsesFolder)) mkdir($responsesFolder);
+
+            // build method folder
+            $methodFolder = $responsesFolder . CURRENT_SERVICE_METHOD_CALLED . '/';
+
+            // create method folder
+            if (!is_dir($methodFolder)) mkdir($methodFolder);
+
+            // push data by code
+            $destination = $methodFolder . $this->statusCode . '.md';
+
+            // save content
+            file_put_contents($destination, $content);
+
+        endif;
     }
 }

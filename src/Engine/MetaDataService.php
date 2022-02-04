@@ -3,6 +3,9 @@ namespace Engine;
 
 use Closure;
 use Engine\Request;
+use Lightroom\Events\{
+    Dispatcher, AttachEvent
+};
 use Lightroom\Requests\Filter;
 use Lightroom\Router\Middlewares;
 use Lightroom\Adapter\ClassManager;
@@ -183,6 +186,9 @@ class MetaDataService
         // check for config for external services
         $configPath = $versionPath . '/config.json';
 
+        // add event listener path
+        $eventListener = $versionPath . '/Listener.php';
+
         // check if file does exists
         if (file_exists($configPath)) :
 
@@ -201,6 +207,15 @@ class MetaDataService
         // check if service exists
         if (!file_exists($path)) return self::serviceNotFound($service . '/' . $className);
 
+        // load listener
+        if (file_exists($eventListener)) include_once $eventListener;
+
+        // event namespace
+        $ListenerNameSpace = 'Resources\\' . $service . '\\' . self::$version . '\\Events\\Listener';
+        
+        // attach if it exists
+        if (class_exists($ListenerNameSpace)) AttachEvent::attach($ListenerNameSpace, $filter->service);
+
         // load path
         include_once $path;
 
@@ -216,6 +231,12 @@ class MetaDataService
         // load method
         $filter->method = self::cleanServiceMethod($filter->method);
 
+        // create needed constants
+        if (!defined('CURRENT_SERVICE_CLASS')) define('CURRENT_SERVICE_CLASS', $classNameSpace);
+        if (!defined('CURRENT_VERSION_PATH')) define('CURRENT_VERSION_PATH', $versionPath);
+        if (!defined('CURRENT_SERVICE_CALLED')) define('CURRENT_SERVICE_CALLED', $filter->service);
+        if (!defined('CURRENT_SERVICE_METHOD_CALLED')) define('CURRENT_SERVICE_METHOD_CALLED', $filter->method);
+
         // attach middleware for resource
         self::applyResourceMiddleware($class, $filter->method, function() use (&$filter, &$class, &$requestMethod){
 
@@ -229,6 +250,9 @@ class MetaDataService
 
             // check for @middleare flag for this method
             self::hasMiddlewareFlagForMethod($class, $filter->method, function() use (&$filter, &$class){
+
+                // is ready
+                call_user_func(Dispatcher::class . '::' . $filter->service, 'ready');
 
                 // load from request
                 Request::loadResource($filter, $class, self::$param);
