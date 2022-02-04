@@ -6,6 +6,7 @@ A Powerful REST API Framework for small and large projects.
 | Moorexa | [www.moorexa.com] | An open source PHP Framework |
 | Amadi Ifeanyi | [www.amadiify.com] | Father and author of Moorexa and more |
 
+
 Crafted for PHP developers. It's great for personal, enterprise, and commercial backend applications.
 
 # Why FatApi
