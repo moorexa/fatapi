@@ -1,7 +1,7 @@
 {
     "name": "moorexa/fatapi",
     "description": "A Powerful REST API Framework for small and large projects.",
-    "type": "library",
+    "type": "ppi-module",
     "license": "MIT",
     "minimum-stability": "dev",
     "author" : [
@@ -35,6 +35,11 @@
         "cboden/ratchet": "^0.4.3",
         "workerman/phpsocket.io": "^1.1",
         "symfony/mailer": "^5.4"
+    },
+    "extra": {
+        "installer-paths": {
+            "/": ["moorexa/fatapi"]
+        }
     }
 }
   
