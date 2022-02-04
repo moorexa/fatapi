@@ -1,17 +1,22 @@
 {
-    "name": "moorexa/micro",
-    "description": "Moorexa is a progressive web development framework designed to give you the best experience building with PHP.",
-    "keywords": ["php", "moorexa", "php framework", "moorexa framework", "moorexa php framework"],
-    "homepage": "http://moorexa.com",
-    "type": "project",
+    "name": "moorexa/fatapi",
+    "description": "A Powerful REST API Framework for small and large projects.",
+    "type": "library",
     "license": "MIT",
-    "authors": [
-        {
-            "name": "Amadi ifeanyi",
-            "email": "helloamadiify@gmail.com",
-            "homepage": "http://amadiify.com"
-        }
+    "author" : [
+      {
+        "name" : "Amadi Ifeanyi",
+        "email" : "helloamadiify@gmail.com"
+      }
     ],
+    "config": {
+        "vendor-dir": "framework/vendor"
+    },
+    "scripts": {
+        "install-fatapi" : [
+            "php fatapi install"
+        ]
+    },
     "require": {
         "ext-json": "*",
         "ext-gd": "*",
@@ -31,3 +36,4 @@
         "symfony/mailer": "^5.4"
     }
 }
+  

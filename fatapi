@@ -44,14 +44,11 @@ if (isset($arguments[1]) && $arguments[1] == 'install') :
     // go back to home
     chdir($currentDirectory);
 
-    // install composer
-    fwrite(STDOUT, 'Installing composer for your project in framework path "'.$directory.'"'. PHP_EOL);
+    // // install composer
+    // fwrite(STDOUT, 'Installing composer for your project in framework path "'.$directory.'"'. PHP_EOL);
 
-    // run installer
-    pclose(popen('php composer install', 'w'));
-
-    // install packages
-    pclose(popen('php composer update', 'w'));
+    // // install packages
+    // pclose(popen('php composer update', 'w'));
 
     // add route
     $fh = fopen($directory . '/src/services/routes.php', 'a+');
