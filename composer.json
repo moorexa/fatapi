@@ -3,6 +3,7 @@
     "description": "A Powerful REST API Framework for small and large projects.",
     "type": "library",
     "license": "MIT",
+    "minimum-stability": "dev",
     "author" : [
       {
         "name" : "Amadi Ifeanyi",
