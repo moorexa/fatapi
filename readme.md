@@ -44,10 +44,14 @@ The list can go on and on. This is a low code movement and we what to help you i
 3. Added knowledge of Moorexa ORM is a plus but not neccessary, everything is auto generated for you.
 
 # Installation
-It's way easy!!! Just download a copy of this project and run the following command from your CLI or Terminal
+It's way easy!!! Ensure that you have composer installed and run the create-project command below
 ```php
-php fatapi install
+composer create-project moorexa/fatapi project-name
 ```
+The command above will create a “project-name” folder.
+
+If you omit the “project-name” argument, the command will create an fatapi folder, which can be renamed as appropriate.
+
 Running this command will install all you need, including local composer and all the required dependencies.
 
 # Getting Started

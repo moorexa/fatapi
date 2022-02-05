@@ -11,7 +11,7 @@
       }
     ],
     "scripts": {
-        "post-install-cmd" : [
+        "post-create-project-cmd" : [
             "@php fatapi install"
         ]
     },
