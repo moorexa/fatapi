@@ -38,7 +38,7 @@ DefaultLanguage en
 # it gets fast and safe here.
 <IfModule mod_headers.c>
 
-  <FilesMatch "(composer.json|composer.lock|composer|app.config)">
+  <FilesMatch "(composer.json|composer.lock|composer|app.config|error.log)">
 	  Deny from all
   </FilesMatch>
 
