@@ -1,7 +1,7 @@
 {
     "name": "moorexa/fatapi",
     "description": "A Powerful REST API Framework for small and large projects.",
-    "type": "library",
+    "type": "project",
     "license": "MIT",
     "minimum-stability": "dev",
     "author" : [
