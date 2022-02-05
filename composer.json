@@ -10,9 +10,6 @@
         "email" : "helloamadiify@gmail.com"
       }
     ],
-    "config": {
-        "vendor-dir": "framework/vendor"
-    },
     "scripts": {
         "post-install-cmd" : [
             "@php fatapi install"
