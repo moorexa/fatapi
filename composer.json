@@ -14,8 +14,8 @@
         "vendor-dir": "framework/vendor"
     },
     "scripts": {
-        "install-fatapi" : [
-            "php fatapi install"
+        "post-install-cmd" : [
+            "@php fatapi install"
         ]
     },
     "require": {

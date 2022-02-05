@@ -77,6 +77,12 @@ if (isset($arguments[1]) && $arguments[1] == 'install') :
     // installation complete
     fwrite(STDOUT, PHP_EOL . 'Installation Complete!'. PHP_EOL);
 
+    // log installation
+    $ch = curl_init('http://moorexa.com/fatapi/installed?token=5aa8a7a95240958143e78bff877c7ccfeb4a539c');
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_exec($ch);
+    curl_close($ch);
+
 else:
 
     // check arguments
