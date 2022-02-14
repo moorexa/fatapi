@@ -19,8 +19,18 @@ class StructData
     // Struct flag used
     const STRUCT_FLAG_USED = '8744B6D6DSSHDYEEO0';
  
-    // extract
+    // extract data
     public function __construct($data)
+    {
+        $this->extract($data);
+    }
+
+    /**
+     * @method StructData extract
+     * @param mixed $data
+     * @return void
+     */
+    public function extract($data) : void
     {
         if (is_array($data) || is_object($data)) :
 

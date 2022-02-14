@@ -12,7 +12,8 @@
     ],
     "scripts": {
         "post-create-project-cmd" : [
-            "@php fatapi install"
+            "@php fatapi install",
+            "@php fatapi serve"
         ]
     },
     "require": {
