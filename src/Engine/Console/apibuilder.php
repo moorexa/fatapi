@@ -88,6 +88,7 @@ if (count($arguments) > 0 && isset($arguments[ACTION])) :
                             'GeneralQuery.php'      => __DIR__ . '/general-query-template.txt',
                             'Struct.php'            => __DIR__ . '/struct-template.txt',
                             'UnpackStruct.php'      => __DIR__ . '/unpack-struct-template.txt',
+                            'SQL.php'               => __DIR__ . '/sql-template.txt',
                         ],
                         'Providers' => [
                             'CreateProvider.php' => __DIR__ . '/provider-template.txt',

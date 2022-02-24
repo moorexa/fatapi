@@ -147,12 +147,6 @@ class MetaDataService
      */
     private static function loadMetaData()
     {
-        $filter = filter('post', [
-            'service'   => self::$filter,
-            'method'    => [self::$filter, self::$defaultMethod],
-            'id'        => ['string|required|notag', headers()->has('x-meta-id') ? headers()->get('x-meta-id') : self::$param],
-        ]);
-
         // service wasn't found
         if (self::doesntExistsInHeaderEither($filter)) return self::noServiceFound();
 
@@ -270,7 +264,7 @@ class MetaDataService
     {
         app('screen')->render([
             'Status' => false,
-            'Message' => 'Missing MetaData Service in request body/header.'
+            'Message' => 'Missing MetaData Service in request header.'
         ]);
     }
 
@@ -459,23 +453,18 @@ class MetaDataService
         // check for id
         if ($header->has('x-meta-id')) $id = $header->get('x-meta-id');
 
-        // run filter
-        if (!$filter->isOk()) :
+        // update
+        $cantContinue = true;
 
-            // update
-            $cantContinue = true;
+        // load filter
+        $filter = filter(['service' => $service, 'method' => $method], [
+            'service'   => [self::$filter, $service],
+            'method'    => [self::$filter, $method],
+            'id'        => ['string|required|notag', ($post->has('id') ? $post->id : $id)]
+        ]);
 
-            // load filter
-            $filter = filter(['service' => $service, 'method' => $method], [
-                'service'   => [self::$filter, ($post->has('service') ? $post->service : $service)],
-                'method'    => [self::$filter, ($post->has('method') ? $post->method : $method)],
-                'id'        => ['string|required|notag', ($post->has('id') ? $post->id : $id)]
-            ]);
-
-            // are we good
-            if ($filter->isOk()) $cantContinue = false;
-
-        endif;
+        // are we good
+        if ($filter->isOk()) $cantContinue = false;
 
         // return bool
         return $cantContinue;

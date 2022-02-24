@@ -132,7 +132,14 @@ After creating a service called **User** for example on version **v1** you shoul
     - Documentation/
         - GetUser.md
         - PostUser.md
+    - Data/
+        - GeneralQuery.php
+        - SQL.php
+        - UnpackStruct.php
+        - Struct.php
     - Model/
+    - Events/
+        - Listener.php
     - Providers/
         - CreateProvider.php
         - UpdateProvider.php

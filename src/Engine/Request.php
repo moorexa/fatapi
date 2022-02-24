@@ -150,16 +150,17 @@ class Request implements Interfaces\RequestInterface
     /**
      * @method RequestInterface getHeader
      * @param string $key
+     * @param mixed $default = null
      * @return mixed
      * 
      * This return data cached from the request header
      */
-    public function getHeader(string $key)
+    public function getHeader(string $key, $default = null)
     {
         /**
          * @var null $header
          */
-        $header = null;
+        $header = $default;
 
         // check if it has 
         if ($this->header->has($key)) $header = $this->header->get($key);
@@ -260,6 +261,22 @@ class Request implements Interfaces\RequestInterface
 
                             // break
                             break;
+
+                        endif;
+
+                        // check the header
+                        if (isset($data->header)) :
+
+                            // load filter
+                            $filterHeader = filter(headers()->all(), (array) $data->header);
+
+                            // failed?
+                            if (!$filterHeader->isOk()) return app('screen')->render([
+                                'Status'    => false,
+                                'Message'   => 'You have failed to send the right request header for this resource "'.$filter->service.'.'.$filter->method.'". Please see what request body to send below',
+                                'Header'    => $data->header,
+                                'Errors'    => $filterHeader->getErrors()
+                            ]);
 
                         endif;
 

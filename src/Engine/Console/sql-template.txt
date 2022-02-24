@@ -1,0 +1,28 @@
+<?php
+namespace Resources\{SERVICE}\{VERSION}\Data;
+use Engine\SQLHelper;
+/**
+ * @package SQL
+ * @author Amadi Ifeanyi <amadiify.com>
+ * 
+ * # example 1 (using a different connection)
+ * const GET_SMS_ACCOUNT = [
+ *      'sql' => 'SELECT * FROM account WHERE name = :name',
+ *      'connection' => ''
+ *  ];
+ * 
+ * # example 2 (direct request using the default connection)
+ * const GET_SMS_ACCOUNT = 'SELECT * FROM account WHERE name = :name';
+ * 
+ * # example 3 (loading a helper method)
+ * const ADD_TO_EXTERNAL_MESSAGES = [
+ *    'sql'    => 'INSERT INTO `external_messages`',
+ *    'helper' => [SQL::class, 'extractValues']
+ * ];
+ */
+class SQL extends SQLHelper
+{
+    // example
+    const YOUR_DESCRIPTIVE_NAME = 'SELECT COUNT(*) FROM `table_name`';
+    
+}
