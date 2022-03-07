@@ -127,6 +127,17 @@ class Request implements Interfaces\RequestInterface
     }
 
     /**
+     * @method RequestInterface setData
+     * @param array $data
+     * 
+     * This method sets the request data body
+     */
+    public function setData(array $data)
+    {
+        foreach($data as $key => $val) $this->requestData[$key] = $val;
+    }
+
+    /**
      * @method RequestInterface getOnly
      * @param mixed $args
      * @return array
@@ -168,6 +179,22 @@ class Request implements Interfaces\RequestInterface
         // return header
         return $header;
     }
+
+
+    /**
+     * @method RequestInterface setHeader
+     * @param string $key
+     * @param mixed $val = null
+     * @return mixed
+     * 
+     * This sets a val in the request header
+     */
+    public function setHeader(string $key, $val = null)
+    {
+        // check if it has 
+        $this->header->set($key, $val);
+    }
+
 
     /**
      * @method Request loadResource

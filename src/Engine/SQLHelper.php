@@ -27,6 +27,9 @@ class SQLHelper
         // get pdo 
         $pdo = db()->pdo();
 
+        // set attribute
+        $pdo->setAttribute( \PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION ); 
+
         // get the sql
         $sql = isset($options[0]) ? $options[0] : '';
         $data = isset($options[1]) ? $options[1] : [];
@@ -60,17 +63,27 @@ class SQLHelper
 
         endif;
 
-        // prepare statement
-        $statement = $pdo->prepare($sql);
-            
-        // execute pdo statement
-        call_user_func_array([$statement, 'execute'], $data);
+        try {
 
-        // commit transaction
-        if ($pdo->inTransaction()) $pdo->commit();
+            // begin transaction
+            if (stripos($sql, 'insert into ') === false) $pdo->beginTransaction();
 
-        // Check for insertion
-        if (stripos($sql, 'insert into ') !== false) self::$ID = $pdo->lastInsertId();
+            // prepare statement
+            $statement = $pdo->prepare($sql);
+                
+            // execute pdo statement
+            call_user_func_array([$statement, 'execute'], $data);
+
+            // commit transaction
+            if ($pdo->inTransaction()) $pdo->commit();
+
+            // Check for insertion
+            if (stripos($sql, 'insert into ') !== false) self::$ID = $pdo->lastInsertId();
+        }
+        catch(\PDOException $e)
+        {
+            if ($pdo->inTransaction()) $pdo->rollBack();
+        }
 
         // return statement
         return $statement;
@@ -91,6 +104,30 @@ class SQLHelper
         $statement .= ' ('.implode(',', $keys).') VALUES ('.implode(',', array_map(function($e){
             return ':' . $e;
         }, $keys)).')';
+
+        // return statement
+        return $statement;
+    }
+
+    /**
+     * @method SQL extractWhereStatement
+     * @param string $statement
+     * @param array $values
+     * @return string
+     */
+    protected static function extractWhereStatement(string $statement, array $values) : string
+    {
+        // get the keys
+        $keys = array_keys($values);
+
+        if (count($keys) > 0) :
+
+            // add to statement
+            $statement .= ' WHERE ' . implode(' AND ', array_map(function($e){
+                return $e . '= :' . $e;
+            }, $keys));
+
+        endif;
 
         // return statement
         return $statement;
