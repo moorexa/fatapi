@@ -21,9 +21,6 @@ class PostMustHaveData implements MiddlewareInterface
      **/
     public function request(Closure $render) : void
     {
-        // validate preflight
-        $this->validateCORSPreflight();
-
         // has post data
         if (count(post()->all()) == 0) :
 
@@ -48,24 +45,5 @@ class PostMustHaveData implements MiddlewareInterface
     public function requestClosed() : void
     {
 
-    }
-
-    /**
-     * @method PostMustHaveData validateCORSPreflight
-     * @return void
-     */
-    public function validateCORSPreflight()
-    {
-        // ALLOW options
-        if (isset($_SERVER['X-REQUEST-METHOD']) && $_SERVER['X-REQUEST-METHOD'] == 'OPTIONS') :
-
-            // ok cool
-            ClassManager::singleton(Response::class)
-            ->success('CORS preflight channel has been validated.');
-
-            // kill process
-            die;
-
-        endif;
     }
 }
