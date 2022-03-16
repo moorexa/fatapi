@@ -33,6 +33,7 @@ class SQLHelper
         // get the sql
         $sql = isset($options[0]) ? $options[0] : '';
         $data = isset($options[1]) ? $options[1] : [];
+        $statement = new \PDOStatement;
 
         // check if constant has been defined
         if (defined($constantName)) :

@@ -237,7 +237,7 @@ class MetaDataService
             // get request
             if ($requestMethod == 'Get') $filter->method .= (self::$param != '' && is_string(self::$param) && filter(['id' => self::$param], [
                 'id' => 'required|number|min:1'
-            ])->isOk() ? 'ById' : '');
+            ])->isOk() ? '' : '');
 
             // check if method exists
             if (!method_exists($class, $filter->method)) return self::serviceMethodNotFound($filter->method);

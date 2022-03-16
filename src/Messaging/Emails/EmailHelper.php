@@ -56,6 +56,7 @@ trait EmailHelper
         $default = isset($config['default']) ? $config['default'] : Mail::class;
 
         // set data
+        $_ENV['mailer_config'] = $config;
         $_ENV['mailer']['outgoing'] = $config['host'];
         $_ENV['mailer']['port'] = $config['port'];
         $_ENV['mailer']['default'] = 'fatapi_user';
