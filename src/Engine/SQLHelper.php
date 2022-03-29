@@ -42,25 +42,29 @@ class SQLHelper
             $sql = constant($constantName);
             $data = $options;
 
-            // is array?
-            if (is_array($sql)) :
+        else :
 
-                // check for connection
-                $pdo = isset($sql['connection']) && $sql['connection'] != '' ? db_with($sql['connection'])->pdo() : $pdo;
-                $sqlStatement = isset($sql['sql']) ? $sql['sql'] : '';
+            $data = [$data];
 
-                // check for helper
-                if (isset($sql['helper']) && is_array($sql['helper'])) :
+        endif;
 
-                    // load now
-                    $sqlStatement = call_user_func_array($sql['helper'], [$sqlStatement, (isset($data[0]) ? $data[0] : $data)]);
+        // is array?
+        if (is_array($sql)) :
 
-                endif;
+            // check for connection
+            $pdo = isset($sql['connection']) && $sql['connection'] != '' ? db_with($sql['connection'])->pdo() : $pdo;
+            $sqlStatement = isset($sql['sql']) ? $sql['sql'] : '';
 
-                // load sql
-                $sql = $sqlStatement;
+            // check for helper
+            if (isset($sql['helper']) && is_array($sql['helper'])) :
+
+                // load now
+                $sqlStatement = call_user_func_array($sql['helper'], [$sqlStatement, (isset($data[0]) ? $data[0] : $data)]);
 
             endif;
+
+            // load sql
+            $sql = $sqlStatement;
 
         endif;
 

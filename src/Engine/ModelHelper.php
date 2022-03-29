@@ -59,7 +59,7 @@ trait ModelHelper
         $columnData = isset($option['column']) ? $option['column'] : '*';
 
         // load get class
-        $getQuery = get();
+        $getQuery = get(); 
 
         // has query
         if (isset($option['query']) && is_array($option['query'])) :
@@ -139,7 +139,7 @@ trait ModelHelper
         })
 
         // add search
-        ->if($getQuery->has('search'), function($builder) use (&$option, $hasWhere){
+        ->if ($getQuery->has('search'), function($builder) use (&$option, $hasWhere){
 
             // split comma
             $searchArray = explode(',', get()->search);
@@ -202,12 +202,12 @@ trait ModelHelper
             endif;
         })
         // add sorting
-        ->if($getQuery->has('sort'), function($builder) use (&$option){
+        ->if ($getQuery->has('sort'), function($builder) use (&$option){
             if (isset($option['primary'])) $builder->orderBy($option['primary'], get()->sort);
         })
 
         // add sorting with a specific format
-        ->if($getQuery->has('sortby') && !$getQuery->has('sort'), function($builder) use (&$option){
+        ->if ($getQuery->has('sortby') && !$getQuery->has('sort'), function($builder) use (&$option){
             
             // split pipe
             $sortBy = explode('|', get()->sortby);
@@ -231,9 +231,63 @@ trait ModelHelper
              
         })
 
+        // add column not
+        ->if ($getQuery->has('column_not'), function($builder) use (&$hasWhere){
+
+            // split comma
+            $searchArray = explode(',', get()->column_not); 
+
+            // build statement
+            $statement = '';
+
+            // run loop
+            foreach ($searchArray as $index => $search) :
+
+                // break pipe
+                $searchPipe = explode('|', $search);
+
+                // all good ?
+                if (count($searchPipe) == 2) :
+
+                    $placeholder = $searchPipe[0] . '_' .$index;
+                    $statement .= $searchPipe[0] . ' != :'.$placeholder.' and ';
+                    $builder->bind([$placeholder => $searchPipe[1]]);
+
+                endif;
+
+            endforeach;
+
+            // clean up and
+            $statement = rtrim($statement, 'and ');
+
+            // add where
+            if ($hasWhere) $builder->replace('WHERE', 'WHERE (' .$statement . ') and ');
+
+            if (!$hasWhere) :
+
+                // add where
+                $builder->replace('{where}', 'WHERE (' .$statement. ') ');
+
+                // update
+                $hasWhere = true;
+
+            endif;
+        })
+
         // add page limit
-        ->if($getQuery->has('limit'), function($builder){
-            $builder->limit(0, get()->limit);
+        ->if ($getQuery->has('limit'), function($builder){
+
+            // get limit start and end
+            $limit = explode(',', get()->limit);
+
+            // get start and end
+            $start = $limit[0];
+
+            // get end
+            $end = isset($limit[1]) ? $limit[1] : 10;
+
+            // load limit
+            $builder->limit($start, $end);
         });
     }
 

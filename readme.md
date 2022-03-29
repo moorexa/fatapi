@@ -816,7 +816,7 @@ A great API is not complete without search and filters, this we know and here we
 
 1. ?sort=asc or desc
 2. ?column=* or name,age etc
-3. ?limit=4 or more
+3. ?limit=0,4 or more
 4. ?sortby=column|asc or desc
 5. ?rowid={0-9 or string} 
 6. ?search=column|data
