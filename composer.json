@@ -18,7 +18,6 @@
     },
     "require": {
         "ext-json": "*",
-        "ext-gd": "*",
         "ext-openssl": "*",
         "ext-simplexml": "*",
         "ext-fileinfo": "*",
@@ -29,7 +28,6 @@
         "filp/whoops": "^2.7",
         "cebe/markdown": "~1.2.0",
         "guzzlehttp/guzzle": "^7.4",
-        "ext-pcntl": "*",
         "cboden/ratchet": "^0.4.3",
         "workerman/phpsocket.io": "^1.1",
         "symfony/mailer": "^5.4"
